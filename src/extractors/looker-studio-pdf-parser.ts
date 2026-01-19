@@ -19,45 +19,85 @@ export class LookerStudioPDFParser {
   parseMetrics(text: string): LookerStudioMetric[] {
     const metrics: LookerStudioMetric[] = [];
 
-    // Pattern 1: Label followed by value on next line
-    // Example: "MTD\n583,826"
-    const labelValuePattern = /([A-Z]{2,}|[A-Za-z\s]+)\n([-]?[\d,]+\.?\d*)/g;
-    let match;
+    // Extract section headers for context
+    const sections = this.extractSections(text);
 
-    while ((match = labelValuePattern.exec(text)) !== null) {
-      const label = match[1].trim();
-      const value = match[2].replace(/,/g, '');
+    // Pattern 1: Section-aware metric extraction
+    for (const section of sections) {
+      const sectionMetrics = this.extractMetricsFromSection(section);
+      metrics.push(...sectionMetrics);
+    }
 
-      // Skip if label is too long or value isn't numeric
-      if (label.length > 50) continue;
+    return metrics;
+  }
 
-      const numValue = parseFloat(value);
-      if (!isNaN(numValue)) {
-        metrics.push({
-          name: label,
-          value: numValue,
+  /**
+   * Extract sections with their headers
+   */
+  private extractSections(text: string): Array<{ header: string; content: string }> {
+    const sections: Array<{ header: string; content: string }> = [];
+
+    // Look for common section headers in Looker Studio
+    const sectionHeaders = [
+      'Channel Mix',
+      'Brand Mix',
+      'Profitability',
+      'Country-wise Revenue',
+      'Brand-wise Revenue',
+      'Channel-wise Revenue',
+      'Order To Delivery',
+      'Ad Performance',
+      'Weekly Sales',
+    ];
+
+    for (const header of sectionHeaders) {
+      const regex = new RegExp(`${header}[^\\n]*`, 'i');
+      const match = text.match(regex);
+
+      if (match) {
+        const startIndex = match.index!;
+        // Get next 500 characters after header
+        const content = text.substring(startIndex, startIndex + 500);
+        sections.push({
+          header: match[0],
+          content,
         });
       }
     }
 
-    // Pattern 2: Inline metrics "Label: Value" or "Label Value"
-    const inlinePatterns = [
-      /([A-Z][A-Za-z\s]+):\s*([-]?[\d,]+\.?\d*)/g,
-      /(Revenue|Target|Variance|MTD|DRR|Expected)[\s:]+\$?([-]?[\d,]+\.?\d*)/gi,
-      /(GM%|MKT%|DC%|CM2%|IOWC%)[\s:]+(\d+\.?\d*)/g,
-      /(ROAS|CTR|CPC|ACos)[\s:]+(\d+\.?\d*)/gi,
+    return sections;
+  }
+
+  /**
+   * Extract metrics from a specific section with context
+   */
+  private extractMetricsFromSection(section: { header: string; content: string }): LookerStudioMetric[] {
+    const metrics: LookerStudioMetric[] = [];
+    const context = section.header;
+
+    // Common metric patterns in Looker Studio
+    const patterns = [
+      // MTD, DRR, Target, Variance patterns
+      /(MTD|DRR|Target|Variance|Expected)\s*\n\s*([-]?[\d,]+\.?\d*)/gi,
+      // Percentage patterns
+      /(GM%|MKT%|DC%|IOWC%|CM2%|CTR|ROAS|ACos)\s*\n?\s*([-]?[\d,]+\.?\d*)/gi,
     ];
 
-    for (const pattern of inlinePatterns) {
-      while ((match = pattern.exec(text)) !== null) {
-        const label = match[1].trim();
+    for (const pattern of patterns) {
+      let match;
+      const patternCopy = new RegExp(pattern.source, pattern.flags);
+
+      while ((match = patternCopy.exec(section.content)) !== null) {
+        const metricName = match[1].trim();
         const value = match[2].replace(/,/g, '').replace(/\$/g, '');
         const numValue = parseFloat(value);
 
-        if (!isNaN(numValue)) {
+        if (!isNaN(numValue) && Math.abs(numValue) > 0.001) {
+          // Only include significant values
           metrics.push({
-            name: label,
+            name: `${context} - ${metricName}`,
             value: numValue,
+            context,
           });
         }
       }
