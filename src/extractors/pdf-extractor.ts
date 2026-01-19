@@ -9,6 +9,7 @@ import pdfParse from 'pdf-parse';
 import { DataSourceType, RawData, DataPoint } from '../types';
 import { generateId } from '../utils/helpers';
 import { logger } from '../utils/logger';
+import { lookerStudioPDFParser } from './looker-studio-pdf-parser';
 
 /**
  * PDF extraction options
@@ -275,7 +276,28 @@ export class PDFExtractor {
     const dataPoints: DataPoint[] = [];
     const content = rawData.data as PDFContent;
 
-    // Convert metrics to data points
+    // Check if this looks like a Looker Studio PDF
+    const isLookerStudio = content.text.includes('Looker') ||
+                           content.text.includes('MTD') && content.text.includes('DRR') ||
+                           content.text.includes('Channel Mix') ||
+                           content.text.includes('Brand Mix');
+
+    if (isLookerStudio) {
+      logger.info('Detected Looker Studio PDF format, using specialized parser');
+
+      // Use Looker Studio parser
+      const lookerMetrics = lookerStudioPDFParser.parseMetrics(content.text);
+      const lookerPoints = lookerStudioPDFParser.metricsToDataPoints(
+        lookerMetrics,
+        rawData.sourceId,
+        rawData.extractedAt
+      );
+      dataPoints.push(...lookerPoints);
+
+      logger.info(`Extracted ${lookerPoints.length} metrics from Looker Studio PDF`);
+    }
+
+    // Convert metrics to data points (standard extraction)
     if (content.metrics) {
       for (const metric of content.metrics) {
         dataPoints.push({
