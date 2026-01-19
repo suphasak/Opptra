@@ -1,16 +1,16 @@
 /**
  * Fashion Business Intelligence Parser
- * Specialized for fashion brand performance analysis
+ * Specialized for fashion brand performance analysis from Looker Studio PDFs
  */
 
 import { DataPoint } from '../types';
 import { generateId } from '../utils/helpers';
 
 export interface BusinessMetric {
-  category: string; // financial, marketing, inventory, sku, channel
-  brand?: string; // USPA, Penti, French Connection, CAMPUS
-  country?: string; // KSA, UAE
-  channel?: string; // Namshi, Noon, CP, Amazon, Trendyol
+  category: string;
+  brand?: string;
+  country?: string;
+  channel?: string;
   metric: string;
   value: number;
   target?: number;
@@ -19,7 +19,7 @@ export interface BusinessMetric {
 }
 
 export class FashionBusinessParser {
-  private brands = ['USPA', 'Penti', 'French Connection', 'CAMPUS'];
+  private brands = ['USPA', 'Penti', 'French Connection', 'CAMPUS', 'Nautica'];
   private countries = ['KSA', 'UAE'];
   private channels = ['Namshi', 'Noon', 'CP', 'Amazon', 'Trendyol'];
 
@@ -29,19 +29,11 @@ export class FashionBusinessParser {
   parseBusinessMetrics(text: string): BusinessMetric[] {
     const metrics: BusinessMetric[] = [];
 
-    // 1. Financial Performance
-    metrics.push(...this.extractFinancialMetrics(text));
-
-    // 2. Brand Performance
-    metrics.push(...this.extractBrandMetrics(text));
-
-    // 3. Channel Performance
-    metrics.push(...this.extractChannelMetrics(text));
-
-    // 4. Marketing Performance
+    // Extract all key metrics
+    metrics.push(...this.extractOverallFinancials(text));
+    metrics.push(...this.extractBrandCountryPerformance(text));
+    metrics.push(...this.extractChannelPerformance(text));
     metrics.push(...this.extractMarketingMetrics(text));
-
-    // 5. Profitability Metrics
     metrics.push(...this.extractProfitabilityMetrics(text));
 
     return metrics;
@@ -50,82 +42,94 @@ export class FashionBusinessParser {
   /**
    * Extract overall financial performance
    */
-  private extractFinancialMetrics(text: string): BusinessMetric[] {
+  private extractOverallFinancials(text: string): BusinessMetric[] {
     const metrics: BusinessMetric[] = [];
 
-    // Pattern: Last Day, MTD, Expected, Target, Variance
-    const financialPattern = /Last Day\s+([\d,]+)\s+MTD\s+([\d,]+)\s+Expected\s+([\d,]+|-)\s+Target\s+([\d,]+)\s+Variance\s+([-]?[\d,]+)\s+Variance %\s+([-]?[\d.]+)/gi;
+    // Pattern: Multi-line format for Last Day, MTD, Expected, Target, Variance
+    // Looking for: "Last Day\n11,992\nMTD\n270,790\n..."
+    const overallSection = this.extractLargeSection(text, 'Country-wise Revenue|Grand total', 2000);
 
-    let match = financialPattern.exec(text);
-    if (match) {
-      const lastDay = this.parseNumber(match[1]);
-      const mtd = this.parseNumber(match[2]);
-      const expected = match[3] === '-' ? 0 : this.parseNumber(match[3]);
-      const target = this.parseNumber(match[4]);
-      const variance = this.parseNumber(match[5]);
-      const variancePercent = parseFloat(match[6]);
+    if (overallSection) {
+      // Extract Last Day
+      const lastDayMatch = overallSection.match(/Last\s+Day[\s\n]+([\d,]+)/i);
+      if (lastDayMatch) {
+        metrics.push({
+          category: 'financial',
+          metric: 'Last Day Revenue',
+          value: this.parseNumber(lastDayMatch[1]),
+        });
+      }
 
-      metrics.push({
-        category: 'financial',
-        metric: 'Revenue - Last Day',
-        value: lastDay,
-      });
+      // Extract MTD, Target, Variance (appears multiple times, take first occurrence)
+      const mtdPattern = /MTD[\s\n]+([\d,]+)[\s\S]{0,200}?Target[\s\n]+([\d,]+)[\s\S]{0,200}?Variance[\s\n]+([-]?[\d,]+)[\s\S]{0,200}?Variance\s*%[\s\n]+([-]?[\d.]+)/i;
+      const mtdMatch = text.match(mtdPattern);
 
-      metrics.push({
-        category: 'financial',
-        metric: 'Revenue - MTD',
-        value: mtd,
-        target,
-        variance,
-        variancePercent,
-      });
+      if (mtdMatch) {
+        const mtd = this.parseNumber(mtdMatch[1]);
+        const target = this.parseNumber(mtdMatch[2]);
+        const variance = this.parseNumber(mtdMatch[3]);
+        const variancePercent = parseFloat(mtdMatch[4]);
 
-      metrics.push({
-        category: 'financial',
-        metric: 'Revenue - Expected EOM',
-        value: expected,
-        target,
-      });
+        metrics.push({
+          category: 'financial',
+          metric: 'MTD Revenue',
+          value: mtd,
+          target,
+          variance,
+          variancePercent,
+        });
+      }
     }
 
     return metrics;
   }
 
   /**
-   * Extract brand-level performance
+   * Extract brand x country performance from table
    */
-  private extractBrandMetrics(text: string): BusinessMetric[] {
+  private extractBrandCountryPerformance(text: string): BusinessMetric[] {
     const metrics: BusinessMetric[] = [];
 
-    // Look for Country x Brand-Wise table
-    const tableSection = this.extractSection(text, 'Country.*Brand.*Revenue', 1500);
+    // Look for "Country x Brand-Wise Revenue" table
+    const tableSection = this.extractLargeSection(text, 'Country.*Brand.*Revenue', 3000);
 
     if (tableSection) {
-      // Pattern: CountryBrandMTDYesterdayExtrapolatedTargetVariance
+      // Pattern for each row: CountryBrandMTDYesterdayExtrapolatedTargetVariance
+      // Example: "UAEUSPA-Footwear88,2743,693171,475180,510-9,035"
       for (const country of this.countries) {
         for (const brand of this.brands) {
-          const brandPattern = new RegExp(
-            `${country}${brand.replace(/\s/g, '-')}[^\\d]*(\\d+,?\\d*)\\s+(\\d+,?\\d*)\\s+(\\d+,?\\d*)\\s+(\\d+,?\\d*)\\s+([-]?\\d+,?\\d*)`,
-            'i'
-          );
+          // Try different brand formats
+          const brandVariants = [
+            brand.replace(/\s/g, '-'),
+            brand.replace(/\s/g, ''),
+            brand,
+          ];
 
-          const match = brandPattern.exec(tableSection);
-          if (match) {
-            const mtd = this.parseNumber(match[1]);
-            // match[2] = yesterday, match[3] = extrapolated (not used)
-            const target = this.parseNumber(match[4]);
-            const variance = this.parseNumber(match[5]);
+          for (const brandVariant of brandVariants) {
+            // Pattern: Country + Brand + (optional category) + numbers
+            const pattern = new RegExp(
+              `${country}${brandVariant}[\\w-]*[\\s\\n]+(\\d[\\d,]+)[\\s\\n]+(\\d[\\d,]*)[\\s\\n]+(\\d[\\d,]+)[\\s\\n]+(\\d[\\d,]+)[\\s\\n]+([-]?\\d[\\d,]*)`,
+              'i'
+            );
 
-            metrics.push({
-              category: 'brand-performance',
-              brand,
-              country,
-              metric: 'MTD Revenue',
-              value: mtd,
-              target,
-              variance,
-              variancePercent: (variance / target) * 100,
-            });
+            const match = pattern.exec(tableSection);
+            if (match) {
+              const mtd = this.parseNumber(match[1]);
+              const target = this.parseNumber(match[4]);
+              const variance = this.parseNumber(match[5]);
+
+              metrics.push({
+                category: 'brand-performance',
+                brand,
+                country,
+                metric: 'MTD Revenue',
+                value: mtd,
+                target,
+                variance,
+                variancePercent: target !== 0 ? (variance / target) * 100 : 0,
+              });
+              break; // Found match, move to next brand
+            }
           }
         }
       }
@@ -137,29 +141,28 @@ export class FashionBusinessParser {
   /**
    * Extract channel performance
    */
-  private extractChannelMetrics(text: string): BusinessMetric[] {
+  private extractChannelPerformance(text: string): BusinessMetric[] {
     const metrics: BusinessMetric[] = [];
 
-    // Look for Channel-wise Revenue section
-    const channelSection = this.extractSection(text, 'Channel.*Revenue', 1000);
+    // Look for "Channel-wise Revenue" or "Channel.*Revenue" section
+    const channelSection = this.extractLargeSection(text, 'Channel.*Revenue|Channel-wise', 2000);
 
     if (channelSection) {
       for (const channel of this.channels) {
-        // Pattern: ChannelWeek1Week2Week3Week4MTD_Revenue
-        const channelPattern = new RegExp(
-          `${channel}[\\s\\d,.]+(\\d+,?\\d+)\\s+MTD`,
+        // Pattern: ChannelWeek1Week2...MTD_Revenue
+        // Look for channel name followed by numbers, find the MTD value
+        const pattern = new RegExp(
+          `${channel}[\\s\\S]{0,300}?(\\d[\\d,]+)[\s\\n]+MTD`,
           'i'
         );
 
-        const match = channelPattern.exec(channelSection);
+        const match = pattern.exec(channelSection);
         if (match) {
-          const mtdRevenue = this.parseNumber(match[1]);
-
           metrics.push({
             category: 'channel-performance',
             channel,
             metric: 'MTD Revenue',
-            value: mtdRevenue,
+            value: this.parseNumber(match[1]),
           });
         }
       }
@@ -169,23 +172,18 @@ export class FashionBusinessParser {
   }
 
   /**
-   * Extract marketing performance
+   * Extract marketing performance metrics
    */
   private extractMarketingMetrics(text: string): BusinessMetric[] {
     const metrics: BusinessMetric[] = [];
 
-    // Look for Ad Performance sections
+    // Look for "Ad Performance" or marketing sections
     for (const channel of ['Noon', 'Namshi']) {
-      const adSection = this.extractSection(text, `${channel}.*Ad.*Metrics`, 500);
+      const adSection = this.extractLargeSection(text, `${channel}.*Ad.*Metrics|${channel}.*Performance`, 1000);
 
       if (adSection) {
-        // Extract ROAS, CTR, CPC, ACos
+        // Extract ROAS
         const roasMatch = adSection.match(/ROAS[\s\n]+([\d.]+)/i);
-        const ctrMatch = adSection.match(/CTR.*%[\s\n]+([\d.]+)/i);
-        const cpcMatch = adSection.match(/CPC.*\$[\s\n]+([\d.]+)/i);
-        const acosMatch = adSection.match(/ACos.*%[\s\n]+([\d.]+)/i);
-        const adSpendMatch = adSection.match(/Ad Spend.*\$[\s\n]+([\d,]+\.?\d*)/i);
-
         if (roasMatch) {
           metrics.push({
             category: 'marketing',
@@ -195,6 +193,8 @@ export class FashionBusinessParser {
           });
         }
 
+        // Extract CTR %
+        const ctrMatch = adSection.match(/CTR[\s\n]*%[\s\n]+([\d.]+)/i);
         if (ctrMatch) {
           metrics.push({
             category: 'marketing',
@@ -204,6 +204,8 @@ export class FashionBusinessParser {
           });
         }
 
+        // Extract CPC
+        const cpcMatch = adSection.match(/CPC[\s\n]*\$[\s\n]+([\d.]+)/i);
         if (cpcMatch) {
           metrics.push({
             category: 'marketing',
@@ -213,6 +215,8 @@ export class FashionBusinessParser {
           });
         }
 
+        // Extract ACos %
+        const acosMatch = adSection.match(/ACos[\s\n]*\(?\s*%\)?[\s\n]+([\d.]+)/i);
         if (acosMatch) {
           metrics.push({
             category: 'marketing',
@@ -222,12 +226,14 @@ export class FashionBusinessParser {
           });
         }
 
-        if (adSpendMatch) {
+        // Extract Ad Spend
+        const spendMatch = adSection.match(/Ad Spend[\s\S]{0,50}?\$?[\s\n]+([\d,]+\.?\d*)/i);
+        if (spendMatch) {
           metrics.push({
             category: 'marketing',
             channel,
             metric: 'Ad Spend',
-            value: this.parseNumber(adSpendMatch[1]),
+            value: this.parseNumber(spendMatch[1]),
           });
         }
       }
@@ -237,55 +243,43 @@ export class FashionBusinessParser {
   }
 
   /**
-   * Extract profitability metrics
+   * Extract profitability metrics by brand
    */
   private extractProfitabilityMetrics(text: string): BusinessMetric[] {
     const metrics: BusinessMetric[] = [];
 
-    // Look for Brand-Wise Profitability table
-    const profitSection = this.extractSection(text, 'Brand-Wise Profitability', 800);
+    // Look for "Brand-Wise Profitability" table
+    const profitSection = this.extractLargeSection(text, 'Brand.*Profitability|BrandGM%', 1500);
 
     if (profitSection) {
       for (const brand of this.brands) {
-        const brandPattern = new RegExp(
+        // Pattern: BrandGM%MKT%DC%IOWC%CM2%
+        // Example: "Penti56.418.7000" or with line breaks
+        const pattern = new RegExp(
           `${brand}[\\s\\n]+(\\d+\\.?\\d*)[\\s\\n]+(\\d+\\.?\\d*)[\\s\\n]+(\\d+\\.?\\d*)[\\s\\n]+(\\d+\\.?\\d*)[\\s\\n]+(\\d+\\.?\\d*)`,
           'i'
         );
 
-        const match = brandPattern.exec(profitSection);
+        const match = pattern.exec(profitSection);
         if (match) {
-          metrics.push(
-            {
-              category: 'profitability',
-              brand,
-              metric: 'GM %',
-              value: parseFloat(match[1]),
-            },
-            {
-              category: 'profitability',
-              brand,
-              metric: 'MKT %',
-              value: parseFloat(match[2]),
-            },
-            {
-              category: 'profitability',
-              brand,
-              metric: 'DC %',
-              value: parseFloat(match[3]),
-            },
-            {
-              category: 'profitability',
-              brand,
-              metric: 'IOWC %',
-              value: parseFloat(match[4]),
-            },
-            {
-              category: 'profitability',
-              brand,
-              metric: 'CM2 %',
-              value: parseFloat(match[5]),
+          const profitMetrics = [
+            { name: 'GM %', value: parseFloat(match[1]) },
+            { name: 'MKT %', value: parseFloat(match[2]) },
+            { name: 'DC %', value: parseFloat(match[3]) },
+            { name: 'IOWC %', value: parseFloat(match[4]) },
+            { name: 'CM2 %', value: parseFloat(match[5]) },
+          ];
+
+          for (const pm of profitMetrics) {
+            if (!isNaN(pm.value)) {
+              metrics.push({
+                category: 'profitability',
+                brand,
+                metric: pm.name,
+                value: pm.value,
+              });
             }
-          );
+          }
         }
       }
     }
@@ -294,9 +288,9 @@ export class FashionBusinessParser {
   }
 
   /**
-   * Extract a section of text based on header
+   * Extract a large section of text based on header pattern
    */
-  private extractSection(text: string, headerPattern: string, length: number): string | null {
+  private extractLargeSection(text: string, headerPattern: string, length: number): string | null {
     const regex = new RegExp(headerPattern, 'i');
     const match = text.match(regex);
 
