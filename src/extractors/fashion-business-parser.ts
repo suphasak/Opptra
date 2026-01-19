@@ -112,8 +112,8 @@ export class FashionBusinessParser {
           const match = brandPattern.exec(tableSection);
           if (match) {
             const mtd = this.parseNumber(match[1]);
-            const yesterday = this.parseNumber(match[2]);
-            const extrapolated = this.parseNumber(match[3]);
+            const _yesterday = this.parseNumber(match[2]);
+            const _extrapolated = this.parseNumber(match[3]);
             const target = this.parseNumber(match[4]);
             const variance = this.parseNumber(match[5]);
 

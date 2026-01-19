@@ -9,7 +9,6 @@ import pdfParse from 'pdf-parse';
 import { DataSourceType, RawData, DataPoint } from '../types';
 import { generateId } from '../utils/helpers';
 import { logger } from '../utils/logger';
-import { lookerStudioPDFParser } from './looker-studio-pdf-parser';
 import { fashionBusinessParser } from './fashion-business-parser';
 
 /**
