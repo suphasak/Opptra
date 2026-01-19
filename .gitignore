@@ -25,8 +25,10 @@ yarn-error.log*
 output/
 reports/
 reports-*/
-*.pdf
-*.html
+output/**/*.pdf
+reports/**/*.pdf
+output/**/*.html
+reports/**/*.html
 
 # IDE
 .vscode/
@@ -48,6 +50,7 @@ temp/
 # Configuration (keep example files)
 opptra.config.json
 
-# Data files
-data/
-*.csv
+# Data files - allow PDFs for testing
+data/*.csv
+data/*.json
+data/*.xlsx
