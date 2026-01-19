@@ -29,12 +29,33 @@ export class FashionBusinessParser {
   parseBusinessMetrics(text: string): BusinessMetric[] {
     const metrics: BusinessMetric[] = [];
 
+    console.log('=== FASHION BUSINESS PARSER DEBUG ===');
+    console.log(`Text length: ${text.length} characters`);
+    console.log(`First 500 chars: ${text.substring(0, 500)}`);
+
     // Extract all key metrics
-    metrics.push(...this.extractOverallFinancials(text));
-    metrics.push(...this.extractBrandCountryPerformance(text));
-    metrics.push(...this.extractChannelPerformance(text));
-    metrics.push(...this.extractMarketingMetrics(text));
-    metrics.push(...this.extractProfitabilityMetrics(text));
+    const financials = this.extractOverallFinancials(text);
+    console.log(`Extracted ${financials.length} financial metrics`);
+    metrics.push(...financials);
+
+    const brandCountry = this.extractBrandCountryPerformance(text);
+    console.log(`Extracted ${brandCountry.length} brand-country metrics`);
+    metrics.push(...brandCountry);
+
+    const channels = this.extractChannelPerformance(text);
+    console.log(`Extracted ${channels.length} channel metrics`);
+    metrics.push(...channels);
+
+    const marketing = this.extractMarketingMetrics(text);
+    console.log(`Extracted ${marketing.length} marketing metrics`);
+    metrics.push(...marketing);
+
+    const profitability = this.extractProfitabilityMetrics(text);
+    console.log(`Extracted ${profitability.length} profitability metrics`);
+    metrics.push(...profitability);
+
+    console.log(`TOTAL: ${metrics.length} metrics extracted`);
+    console.log('=====================================');
 
     return metrics;
   }
@@ -49,7 +70,10 @@ export class FashionBusinessParser {
     // Looking for: "Last Day\n11,992\nMTD\n270,790\n..."
     const overallSection = this.extractLargeSection(text, 'Country-wise Revenue|Grand total', 2000);
 
+    console.log(`  Overall section found: ${!!overallSection}`);
     if (overallSection) {
+      console.log(`  Overall section preview: ${overallSection.substring(0, 200)}`);
+
       // Extract Last Day
       const lastDayMatch = overallSection.match(/Last\s+Day[\s\n]+([\d,]+)/i);
       if (lastDayMatch) {
@@ -92,6 +116,19 @@ export class FashionBusinessParser {
 
     // Look for "Country x Brand-Wise Revenue" table
     const tableSection = this.extractLargeSection(text, 'Country.*Brand.*Revenue', 3000);
+
+    console.log(`  Brand-country table section found: ${!!tableSection}`);
+    if (tableSection) {
+      console.log(`  Table section preview: ${tableSection.substring(0, 300)}`);
+    } else {
+      console.log(`  Searching for alternative patterns...`);
+      // Try alternative header patterns
+      const altSection = this.extractLargeSection(text, 'Country.*Brand|Brand.*Country', 3000);
+      console.log(`  Alternative section found: ${!!altSection}`);
+      if (altSection) {
+        console.log(`  Alt section preview: ${altSection.substring(0, 300)}`);
+      }
+    }
 
     if (tableSection) {
       // Pattern for each row: CountryBrandMTDYesterdayExtrapolatedTargetVariance
