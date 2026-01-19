@@ -10,6 +10,7 @@ import { DataSourceType, RawData, DataPoint } from '../types';
 import { generateId } from '../utils/helpers';
 import { logger } from '../utils/logger';
 import { lookerStudioPDFParser } from './looker-studio-pdf-parser';
+import { fashionBusinessParser } from './fashion-business-parser';
 
 /**
  * PDF extraction options
@@ -283,18 +284,19 @@ export class PDFExtractor {
                            content.text.includes('Brand Mix');
 
     if (isLookerStudio) {
-      logger.info('Detected Looker Studio PDF format, using specialized parser');
+      logger.info('Detected Looker Studio PDF format, using specialized business parser');
 
-      // Use Looker Studio parser
-      const lookerMetrics = lookerStudioPDFParser.parseMetrics(content.text);
-      const lookerPoints = lookerStudioPDFParser.metricsToDataPoints(
-        lookerMetrics,
+      // Use comprehensive fashion business parser
+      const businessMetrics = fashionBusinessParser.parseBusinessMetrics(content.text);
+      const businessPoints = fashionBusinessParser.metricsToDataPoints(
+        businessMetrics,
         rawData.sourceId,
         rawData.extractedAt
       );
-      dataPoints.push(...lookerPoints);
+      dataPoints.push(...businessPoints);
 
-      logger.info(`Extracted ${lookerPoints.length} metrics from Looker Studio PDF`);
+      logger.info(`Extracted ${businessPoints.length} business metrics from Looker Studio PDF`);
+      logger.info(`Categories: financial, brand-performance, channel-performance, marketing, profitability`);
     }
 
     // Convert metrics to data points (standard extraction)
