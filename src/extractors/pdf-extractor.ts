@@ -301,7 +301,7 @@ export class PDFExtractor {
           for (const row of table.rows) {
             // Try to extract numeric values
             for (const [key, value] of Object.entries(row)) {
-              const numericValue = this.tryParseNumber(value);
+              const numericValue = this.tryParseNumber(String(value));
               if (numericValue !== null) {
                 dataPoints.push({
                   id: generateId(),

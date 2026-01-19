@@ -165,7 +165,7 @@ export function deepMerge<T extends Record<string, any>>(target: T, source: Part
       const sourceValue = source[key];
 
       if (isObject(targetValue) && isObject(sourceValue)) {
-        result[key] = deepMerge(targetValue, sourceValue);
+        result[key] = deepMerge(targetValue, sourceValue) as any;
       } else {
         result[key] = sourceValue as any;
       }

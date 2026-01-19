@@ -392,7 +392,6 @@ export class InsightGenerator {
 
     if (pairs.length < 3) return 0;
 
-    const n = pairs.length;
     const xValues = pairs.map(p => p.x);
     const yValues = pairs.map(p => p.y);
 

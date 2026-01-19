@@ -147,7 +147,7 @@ export class WebScraper {
   /**
    * Extract data from a single element
    */
-  private extractElementData($el: cheerio.Cheerio, $: cheerio.CheerioAPI): any {
+  private extractElementData($el: cheerio.Cheerio<any>, $: cheerio.CheerioAPI): any {
     // Check if it's a table
     if ($el.is('table')) {
       return this.parseTable($el, $);
@@ -159,7 +159,7 @@ export class WebScraper {
     if (attrs) {
       for (const [key, value] of Object.entries(attrs)) {
         if (key.startsWith('data-')) {
-          dataAttrs[key.substring(5)] = value;
+          dataAttrs[key.substring(5)] = String(value);
         }
       }
     }
@@ -178,28 +178,28 @@ export class WebScraper {
   /**
    * Parse HTML table into structured data
    */
-  private parseTable($table: cheerio.Cheerio, $: cheerio.CheerioAPI): any {
+  private parseTable($table: cheerio.Cheerio<any>, $: cheerio.CheerioAPI): any {
     const headers: string[] = [];
     const rows: any[] = [];
 
     // Extract headers
-    $table.find('thead th, thead td').each((_, el) => {
+    $table.find('thead th, thead td').each((_: any, el: any) => {
       headers.push($(el).text().trim());
     });
 
     // If no thead, use first row as headers
     if (headers.length === 0) {
-      $table.find('tr').first().find('th, td').each((_, el) => {
+      $table.find('tr').first().find('th, td').each((_: any, el: any) => {
         headers.push($(el).text().trim());
       });
     }
 
     // Extract rows
-    $table.find('tbody tr, tr').each((rowIndex, row) => {
+    $table.find('tbody tr, tr').each((rowIndex: any, row: any) => {
       if (rowIndex === 0 && headers.length === 0) return; // Skip header row
 
       const rowData: Record<string, string> = {};
-      $(row).find('td').each((colIndex, cell) => {
+      $(row).find('td').each((colIndex: any, cell: any) => {
         const header = headers[colIndex] || `column_${colIndex}`;
         rowData[header] = $(cell).text().trim();
       });
@@ -377,7 +377,7 @@ export class WebScraper {
 
         for (const row of table.rows) {
           for (const [key, value] of Object.entries(row)) {
-            const numericValue = this.tryParseNumber(value);
+            const numericValue = this.tryParseNumber(String(value));
 
             if (numericValue !== null) {
               dataPoints.push({

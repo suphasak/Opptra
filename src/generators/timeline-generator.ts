@@ -9,7 +9,6 @@ import {
   Insight,
   ActionItem,
   ConsolidatedData,
-  Priority,
 } from '../types';
 import { generateId, sortBy } from '../utils/helpers';
 import { logger } from '../utils/logger';

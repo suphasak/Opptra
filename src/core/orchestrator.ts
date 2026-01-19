@@ -22,7 +22,7 @@ import { insightGenerator } from '../analyzers/insight-generator';
 import { actionPlanGenerator } from '../generators/action-plan-generator';
 import { timelineGenerator } from '../generators/timeline-generator';
 import { logger, startTimer } from '../utils/logger';
-import { generateId, sanitizeFilename } from '../utils/helpers';
+import { generateId } from '../utils/helpers';
 
 /**
  * Data source input
@@ -166,7 +166,7 @@ export class OpptraBI {
 
           case DataSourceType.LOOKER_STUDIO:
             const lookerData = await lookerStudioConnector.extract(sourceId, {
-              credentials: source.credentials || { type: 'service_account' },
+              credentials: (source.credentials as any) || { type: 'service_account' as const },
               reportId: source.location,
             });
             rawDataList.push(lookerData);

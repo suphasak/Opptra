@@ -149,7 +149,7 @@ export class LookerStudioConnector {
 
     logger.info(`Executing BigQuery: ${sqlQuery}`);
 
-    const [job] = await bigquery.jobs.query({
+    const job = await bigquery.jobs.query({
       projectId,
       requestBody: {
         query: sqlQuery,
@@ -162,7 +162,7 @@ export class LookerStudioConnector {
 
     return {
       datasetId,
-      rows: rows.map(row => this.bigQueryRowToObject(row, schema)),
+      rows: rows.map((row: any) => this.bigQueryRowToObject(row, schema)),
       schema,
       extractedAt: new Date(),
       metadata: {
@@ -290,7 +290,7 @@ export class LookerStudioConnector {
           timestamp: content.extractedAt,
           category: 'looker-studio',
           metric: key,
-          value: numericValue !== null ? numericValue : value,
+          value: numericValue !== null ? numericValue : String(value),
           source: rawData.sourceId,
           metadata: {
             sourceType: DataSourceType.LOOKER_STUDIO,

@@ -133,10 +133,10 @@ function isAccountLocked(user: StoredUser): boolean {
  * In production, this should use parameterized queries to prevent SQL injection
  * Fixed: Using parameterized queries pattern (shown in comments)
  */
-async function getUserFromDatabase(username: string): Promise<StoredUser | null> {
+async function getUserFromDatabase(_username: string): Promise<StoredUser | null> {
   // Production implementation should use parameterized queries:
   // const query = 'SELECT * FROM users WHERE username = $1';
-  // const result = await db.query(query, [username]);
+  // const result = await db.query(query, [_username]);
   // return result.rows[0] || null;
 
   // Mock implementation for demonstration
@@ -146,29 +146,29 @@ async function getUserFromDatabase(username: string): Promise<StoredUser | null>
 /**
  * Mock function to update failed login attempts
  */
-async function updateFailedAttempts(userId: string, failedAttempts: number, lock: boolean): Promise<void> {
+async function updateFailedAttempts(_userId: string, _failedAttempts: number, _lock: boolean): Promise<void> {
   // Production implementation:
   // const query = 'UPDATE users SET failed_attempts = $1, is_locked = $2, last_failed_attempt = $3 WHERE id = $4';
-  // await db.query(query, [failedAttempts, lock, new Date(), userId]);
+  // await db.query(query, [_failedAttempts, _lock, new Date(), _userId]);
 }
 
 /**
  * Mock function to reset failed attempts
  */
-async function resetFailedAttempts(userId: string): Promise<void> {
+async function resetFailedAttempts(_userId: string): Promise<void> {
   // Production implementation:
   // const query = 'UPDATE users SET failed_attempts = 0, is_locked = false WHERE id = $1';
-  // await db.query(query, [userId]);
+  // await db.query(query, [_userId]);
 }
 
 /**
  * Mock function to create session
  */
-async function createSession(userId: string, sessionToken: string): Promise<void> {
+async function createSession(_userId: string, _sessionToken: string): Promise<void> {
   // Production implementation:
   // const query = 'INSERT INTO sessions (user_id, token, created_at, expires_at) VALUES ($1, $2, $3, $4)';
   // const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
-  // await db.query(query, [userId, sessionToken, new Date(), expiresAt]);
+  // await db.query(query, [_userId, _sessionToken, new Date(), expiresAt]);
 }
 
 /**
@@ -258,11 +258,11 @@ export async function login(credentials: LoginCredentials): Promise<LoginResult>
 /**
  * Logout function to invalidate session
  */
-export async function logout(sessionToken: string): Promise<boolean> {
+export async function logout(_sessionToken: string): Promise<boolean> {
   try {
     // Production implementation:
     // const query = 'DELETE FROM sessions WHERE token = $1';
-    // await db.query(query, [sessionToken]);
+    // await db.query(query, [_sessionToken]);
     return true;
   } catch (error) {
     console.error('Logout error:', error);
