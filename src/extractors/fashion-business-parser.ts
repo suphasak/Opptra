@@ -127,11 +127,13 @@ export class FashionBusinessParser {
           ];
 
           for (const brandVariant of brandVariants) {
-            // Pattern: Country + Brand + Category (optional) + 5 numbers (no spaces!)
-            // Format: UAEUSPA-Footwear88,2743,693171,475180,510-9,035
-            // Yesterday can be negative! (e.g., KSAPenti-Apparel2,079-103,831...)
+            // Pattern: Country + Brand + Category (optional) + 5 concatenated numbers
+            // Format: KSAUSPA-Footwear145,5147,332265,964270,764-4,800
+            // Parse from both ends: MTD (start) and Variance (end) have fixed formats
+            // MTD: d{1,3},d{3} | Yesterday: variable | Extrapolated: d{2,3},d{3} | Target: d{2,3},d{3} | Variance: -d{1,3},d{3}
+            // [A-Za-z-]* matches category like "-Footwear" but NOT digits
             const pattern = new RegExp(
-              `${country}${brandVariant}[\\w-]*(\\d[\\d,]+)([-]?\\d[\\d,]*)(\\d[\\d,]+)(\\d[\\d,]+)([-]?\\d[\\d,]*)`,
+              `${country}${brandVariant}[A-Za-z-]*(\\d{1,3},\\d{3})(.*?)(\\d{2,3},\\d{3})(\\d{2,3},\\d{3})([-]\\d{1,3},\\d{3})`,
               'i'
             );
 
