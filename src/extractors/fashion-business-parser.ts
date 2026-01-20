@@ -31,7 +31,14 @@ export class FashionBusinessParser {
 
     console.log('=== FASHION BUSINESS PARSER DEBUG ===');
     console.log(`Text length: ${text.length} characters`);
-    console.log(`First 500 chars: ${text.substring(0, 500)}`);
+    console.log(`\n=== FIRST 1000 CHARS ===`);
+    console.log(text.substring(0, 1000));
+    console.log(`\n=== CHARS 5000-6000 ===`);
+    console.log(text.substring(5000, 6000));
+    console.log(`\n=== CHARS 10000-11000 ===`);
+    console.log(text.substring(10000, 11000));
+    console.log(`\n=== LAST 500 CHARS ===`);
+    console.log(text.substring(text.length - 500));
 
     // Extract all key metrics
     const financials = this.extractOverallFinancials(text);
@@ -131,8 +138,10 @@ export class FashionBusinessParser {
     }
 
     if (tableSection) {
+      console.log(`  Processing brand-country combinations...`);
       // Pattern for each row: CountryBrandMTDYesterdayExtrapolatedTargetVariance
       // Example: "UAEUSPA-Footwear88,2743,693171,475180,510-9,035"
+      // Numbers are concatenated WITHOUT spaces!
       for (const country of this.countries) {
         for (const brand of this.brands) {
           // Try different brand formats
@@ -143,14 +152,16 @@ export class FashionBusinessParser {
           ];
 
           for (const brandVariant of brandVariants) {
-            // Pattern: Country + Brand + (optional category) + numbers
+            // Pattern: Country + Brand + Category (optional) + 5 numbers (no spaces!)
+            // Format: UAEUSPA-Footwear88,2743,693171,475180,510-9,035
             const pattern = new RegExp(
-              `${country}${brandVariant}[\\w-]*[\\s\\n]+(\\d[\\d,]+)[\\s\\n]+(\\d[\\d,]*)[\\s\\n]+(\\d[\\d,]+)[\\s\\n]+(\\d[\\d,]+)[\\s\\n]+([-]?\\d[\\d,]*)`,
+              `${country}${brandVariant}[\\w-]*(\\d[\\d,]+)(\\d[\\d,]*)(\\d[\\d,]+)(\\d[\\d,]+)([-]?\\d[\\d,]*)`,
               'i'
             );
 
             const match = pattern.exec(tableSection);
             if (match) {
+              console.log(`    MATCH: ${country} ${brand} - ${match[0].substring(0, 50)}...`);
               const mtd = this.parseNumber(match[1]);
               const target = this.parseNumber(match[4]);
               const variance = this.parseNumber(match[5]);
@@ -181,26 +192,39 @@ export class FashionBusinessParser {
   private extractChannelPerformance(text: string): BusinessMetric[] {
     const metrics: BusinessMetric[] = [];
 
-    // Look for "Channel-wise Revenue" or "Channel.*Revenue" section
-    const channelSection = this.extractLargeSection(text, 'Channel.*Revenue|Channel-wise', 2000);
+    // Look for "Channel-wise Revenue" section (not "Channel Mix" which is summary)
+    const channelSection = this.extractLargeSection(text, 'Channel-wise Revenue', 2000);
+
+    console.log(`  Channel section found: ${!!channelSection}`);
+    if (channelSection) {
+      console.log(`  Channel section preview: ${channelSection.substring(0, 400)}`);
+    }
 
     if (channelSection) {
+      console.log(`  Processing channels...`);
       for (const channel of this.channels) {
-        // Pattern: ChannelWeek1Week2...MTD_Revenue
-        // Look for channel name followed by numbers, find the MTD value
+        // Pattern: ChannelWeek1Week2Week3Week4MTD_Revenue
+        // Example: "Namshi28,917.0857,239.4644,282.640130,439237,860..."
+        // After Week3: 0130,439237,860... (Week4=0, MTD=130,439, Expected=237,860...)
+        // Week 4: 0 or 962 (1-3 digits, non-greedy)
+        // MTD: properly formatted number like 5,502 or 130,439 or 99,221
+        // MTD format: 1-3 digits, then groups of ,DDD
         const pattern = new RegExp(
-          `${channel}[\\s\\S]{0,300}?(\\d[\\d,]+)[\s\\n]+MTD`,
+          `${channel}(\\d[\\d,]*\\.\\d{2})(\\d[\\d,]*\\.\\d{2})(\\d[\\d,]*\\.\\d{2})(\\d{1,3}?)(\\d{1,3}(?:,\\d{3})+)`,
           'i'
         );
 
         const match = pattern.exec(channelSection);
         if (match) {
+          console.log(`    MATCH: ${channel} - Week1: ${match[1]}, Week2: ${match[2]}, Week3: ${match[3]}, Week4: ${match[4]}, MTD: ${match[5]}`);
           metrics.push({
             category: 'channel-performance',
             channel,
             metric: 'MTD Revenue',
-            value: this.parseNumber(match[1]),
+            value: this.parseNumber(match[5]),
           });
+        } else {
+          console.log(`    NO MATCH for ${channel}`);
         }
       }
     }
@@ -214,9 +238,15 @@ export class FashionBusinessParser {
   private extractMarketingMetrics(text: string): BusinessMetric[] {
     const metrics: BusinessMetric[] = [];
 
+    console.log(`  Checking for marketing metrics...`);
     // Look for "Ad Performance" or marketing sections
     for (const channel of ['Noon', 'Namshi']) {
       const adSection = this.extractLargeSection(text, `${channel}.*Ad.*Metrics|${channel}.*Performance`, 1000);
+
+      console.log(`    ${channel} ad section found: ${!!adSection}`);
+      if (adSection) {
+        console.log(`    ${channel} section preview: ${adSection.substring(0, 200)}`);
+      }
 
       if (adSection) {
         // Extract ROAS
@@ -287,6 +317,11 @@ export class FashionBusinessParser {
 
     // Look for "Brand-Wise Profitability" table
     const profitSection = this.extractLargeSection(text, 'Brand.*Profitability|BrandGM%', 1500);
+
+    console.log(`  Profitability section found: ${!!profitSection}`);
+    if (profitSection) {
+      console.log(`  Profitability section preview: ${profitSection.substring(0, 300)}`);
+    }
 
     if (profitSection) {
       for (const brand of this.brands) {
