@@ -72,9 +72,10 @@ export class FashionBusinessParser {
         });
       }
 
-      // Extract MTD, Target, Variance (appears multiple times, take first occurrence)
+      // Extract MTD, Target, Variance from Country-wise Revenue section ONLY (not Channel Mix)
+      // IMPORTANT: Match against overallSection, NOT full text to avoid December data from Channel Mix
       const mtdPattern = /MTD[\s\n]+([\d,]+)[\s\S]{0,200}?Target[\s\n]+([\d,]+)[\s\S]{0,200}?Variance[\s\n]+([-]?[\d,]+)[\s\S]{0,200}?Variance\s*%[\s\n]+([-]?[\d.]+)/i;
-      const mtdMatch = text.match(mtdPattern);
+      const mtdMatch = overallSection.match(mtdPattern);
 
       if (mtdMatch) {
         const mtd = this.parseNumber(mtdMatch[1]);
