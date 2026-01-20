@@ -324,15 +324,23 @@ export class FashionBusinessParser {
     }
 
     if (profitSection) {
+      console.log(`  Processing profitability for brands...`);
       for (const brand of this.brands) {
         // Pattern: BrandGM%MKT%DC%IOWC%CM2%
-        // Example: "Penti56.418.7000" or with line breaks
+        // Example: "Penti56.418.7000" - all CONCATENATED with NO spaces!
+        // Numbers are decimals like 56.4, 18.7, 0, 0, 0
         const pattern = new RegExp(
-          `${brand}[\\s\\n]+(\\d+\\.?\\d*)[\\s\\n]+(\\d+\\.?\\d*)[\\s\\n]+(\\d+\\.?\\d*)[\\s\\n]+(\\d+\\.?\\d*)[\\s\\n]+(\\d+\\.?\\d*)`,
+          `${brand}(\\d+\\.?\\d*)(\\d+\\.?\\d*)(\\d+\\.?\\d*)(\\d+\\.?\\d*)(\\d+\\.?\\d*)`,
           'i'
         );
 
         const match = pattern.exec(profitSection);
+        if (match) {
+          console.log(`    MATCH: ${brand} - GM: ${match[1]}, MKT: ${match[2]}, DC: ${match[3]}, IOWC: ${match[4]}, CM2: ${match[5]}`);
+        } else {
+          console.log(`    NO MATCH for ${brand}`);
+        }
+
         if (match) {
           const profitMetrics = [
             { name: 'GM %', value: parseFloat(match[1]) },
