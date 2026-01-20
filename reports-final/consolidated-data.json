@@ -1,0 +1,508 @@
+{
+  "dataPoints": [
+    {
+      "id": "1768894522320-0e1e262a6370b257",
+      "timestamp": "2026-01-20T07:35:22.316Z",
+      "category": "financial",
+      "metric": "Last Day Revenue",
+      "value": 11992,
+      "source": "1768894521833-06138e8d2a905535",
+      "metadata": {
+        "sourceType": "pdf"
+      }
+    },
+    {
+      "id": "1768894522320-0dda096900a5de4b",
+      "timestamp": "2026-01-20T07:35:22.316Z",
+      "category": "financial",
+      "metric": "MTD Revenue",
+      "value": 583826,
+      "source": "1768894521833-06138e8d2a905535",
+      "metadata": {
+        "sourceType": "pdf",
+        "target": 597000,
+        "variance": -13174,
+        "variancePercent": -2.2
+      }
+    },
+    {
+      "id": "1768894522320-96dbbcc2f2e15c38",
+      "timestamp": "2026-01-20T07:35:22.316Z",
+      "category": "brand-performance",
+      "metric": "USPA - KSA - MTD Revenue",
+      "value": 145514,
+      "source": "1768894521833-06138e8d2a905535",
+      "metadata": {
+        "sourceType": "pdf",
+        "brand": "USPA",
+        "country": "KSA",
+        "target": 270764,
+        "variance": -4800,
+        "variancePercent": -1.772761519256622
+      }
+    },
+    {
+      "id": "1768894522320-1bf1408bf4ee7214",
+      "timestamp": "2026-01-20T07:35:22.316Z",
+      "category": "brand-performance",
+      "metric": "Penti - KSA - MTD Revenue",
+      "value": 2079,
+      "source": "1768894521833-06138e8d2a905535",
+      "metadata": {
+        "sourceType": "pdf",
+        "brand": "Penti",
+        "country": "KSA",
+        "target": 10000,
+        "variance": -6169,
+        "variancePercent": -61.69
+      }
+    },
+    {
+      "id": "1768894522320-9639b964b85b5649",
+      "timestamp": "2026-01-20T07:35:22.316Z",
+      "category": "brand-performance",
+      "metric": "French Connection - KSA - MTD Revenue",
+      "value": 4547,
+      "source": "1768894521833-06138e8d2a905535",
+      "metadata": {
+        "sourceType": "pdf",
+        "brand": "French Connection",
+        "country": "KSA",
+        "target": 14000,
+        "variance": -5669,
+        "variancePercent": -40.49285714285714
+      }
+    },
+    {
+      "id": "1768894522320-fc69ca92bef7ab0d",
+      "timestamp": "2026-01-20T07:35:22.316Z",
+      "category": "brand-performance",
+      "metric": "CAMPUS - KSA - MTD Revenue",
+      "value": 11156,
+      "source": "1768894521833-06138e8d2a905535",
+      "metadata": {
+        "sourceType": "pdf",
+        "brand": "CAMPUS",
+        "country": "KSA",
+        "target": 42000,
+        "variance": -21656,
+        "variancePercent": -51.56190476190476
+      }
+    },
+    {
+      "id": "1768894522320-5511b889eed89e2e",
+      "timestamp": "2026-01-20T07:35:22.316Z",
+      "category": "brand-performance",
+      "metric": "USPA - UAE - MTD Revenue",
+      "value": 88274,
+      "source": "1768894521833-06138e8d2a905535",
+      "metadata": {
+        "sourceType": "pdf",
+        "brand": "USPA",
+        "country": "UAE",
+        "target": 180510,
+        "variance": -9035,
+        "variancePercent": -5.0052628663231955
+      }
+    },
+    {
+      "id": "1768894522320-5ffd931bcbfc0d94",
+      "timestamp": "2026-01-20T07:35:22.316Z",
+      "category": "brand-performance",
+      "metric": "Penti - UAE - MTD Revenue",
+      "value": 5744,
+      "source": "1768894521833-06138e8d2a905535",
+      "metadata": {
+        "sourceType": "pdf",
+        "brand": "Penti",
+        "country": "UAE",
+        "target": 15000,
+        "variance": -4479,
+        "variancePercent": -29.86
+      }
+    },
+    {
+      "id": "1768894522320-1f10fddc0590b9e5",
+      "timestamp": "2026-01-20T07:35:22.316Z",
+      "category": "brand-performance",
+      "metric": "French Connection - UAE - MTD Revenue",
+      "value": 9123,
+      "source": "1768894521833-06138e8d2a905535",
+      "metadata": {
+        "sourceType": "pdf",
+        "brand": "French Connection",
+        "country": "UAE",
+        "target": 21000,
+        "variance": -4179,
+        "variancePercent": -19.900000000000002
+      }
+    },
+    {
+      "id": "1768894522320-5d45977deccf9321",
+      "timestamp": "2026-01-20T07:35:22.316Z",
+      "category": "brand-performance",
+      "metric": "CAMPUS - UAE - MTD Revenue",
+      "value": 4352,
+      "source": "1768894521833-06138e8d2a905535",
+      "metadata": {
+        "sourceType": "pdf",
+        "brand": "CAMPUS",
+        "country": "UAE",
+        "target": 18000,
+        "variance": -10064,
+        "variancePercent": -55.91111111111111
+      }
+    },
+    {
+      "id": "1768894522320-c8b2722d470b9665",
+      "timestamp": "2026-01-20T07:35:22.316Z",
+      "category": "channel-performance",
+      "metric": "Namshi - MTD Revenue",
+      "value": 130439,
+      "source": "1768894521833-06138e8d2a905535",
+      "metadata": {
+        "sourceType": "pdf",
+        "channel": "Namshi"
+      }
+    },
+    {
+      "id": "1768894522320-18bf63410d5c157f",
+      "timestamp": "2026-01-20T07:35:22.316Z",
+      "category": "channel-performance",
+      "metric": "Noon - MTD Revenue",
+      "value": 91427,
+      "source": "1768894521833-06138e8d2a905535",
+      "metadata": {
+        "sourceType": "pdf",
+        "channel": "Noon"
+      }
+    },
+    {
+      "id": "1768894522320-7dc3641f7be31b51",
+      "timestamp": "2026-01-20T07:35:22.316Z",
+      "category": "channel-performance",
+      "metric": "CP - MTD Revenue",
+      "value": 5502,
+      "source": "1768894521833-06138e8d2a905535",
+      "metadata": {
+        "sourceType": "pdf",
+        "channel": "CP"
+      }
+    },
+    {
+      "id": "1768894522320-8f9d39e94f18c698",
+      "timestamp": "2026-01-20T07:35:22.316Z",
+      "category": "channel-performance",
+      "metric": "Amazon_1P - MTD Revenue",
+      "value": 4995,
+      "source": "1768894521833-06138e8d2a905535",
+      "metadata": {
+        "sourceType": "pdf",
+        "channel": "Amazon_1P"
+      }
+    },
+    {
+      "id": "1768894522320-99f4834b2f3df33c",
+      "timestamp": "2026-01-20T07:35:22.316Z",
+      "category": "channel-performance",
+      "metric": "Trendyol - MTD Revenue",
+      "value": 1424,
+      "source": "1768894521833-06138e8d2a905535",
+      "metadata": {
+        "sourceType": "pdf",
+        "channel": "Trendyol"
+      }
+    },
+    {
+      "id": "1768894522320-7d5219e926f015f9",
+      "timestamp": "2026-01-20T07:35:22.316Z",
+      "category": "profitability",
+      "metric": "USPA - GM %",
+      "value": 62.3,
+      "source": "1768894521833-06138e8d2a905535",
+      "metadata": {
+        "sourceType": "pdf",
+        "brand": "USPA"
+      }
+    },
+    {
+      "id": "1768894522320-180035f51d8a9ad3",
+      "timestamp": "2026-01-20T07:35:22.316Z",
+      "category": "profitability",
+      "metric": "USPA - MKT %",
+      "value": 6.6,
+      "source": "1768894521833-06138e8d2a905535",
+      "metadata": {
+        "sourceType": "pdf",
+        "brand": "USPA"
+      }
+    },
+    {
+      "id": "1768894522320-32f77293c902386f",
+      "timestamp": "2026-01-20T07:35:22.316Z",
+      "category": "profitability",
+      "metric": "USPA - DC %",
+      "value": 0,
+      "source": "1768894521833-06138e8d2a905535",
+      "metadata": {
+        "sourceType": "pdf",
+        "brand": "USPA"
+      }
+    },
+    {
+      "id": "1768894522320-073864df81d5eb15",
+      "timestamp": "2026-01-20T07:35:22.316Z",
+      "category": "profitability",
+      "metric": "USPA - IOWC %",
+      "value": 0,
+      "source": "1768894521833-06138e8d2a905535",
+      "metadata": {
+        "sourceType": "pdf",
+        "brand": "USPA"
+      }
+    },
+    {
+      "id": "1768894522320-79829e6985ffff81",
+      "timestamp": "2026-01-20T07:35:22.316Z",
+      "category": "profitability",
+      "metric": "USPA - CM2 %",
+      "value": 0,
+      "source": "1768894521833-06138e8d2a905535",
+      "metadata": {
+        "sourceType": "pdf",
+        "brand": "USPA"
+      }
+    },
+    {
+      "id": "1768894522320-437a8407a4874d2c",
+      "timestamp": "2026-01-20T07:35:22.316Z",
+      "category": "profitability",
+      "metric": "Penti - GM %",
+      "value": 56.41,
+      "source": "1768894521833-06138e8d2a905535",
+      "metadata": {
+        "sourceType": "pdf",
+        "brand": "Penti"
+      }
+    },
+    {
+      "id": "1768894522320-b6c2139e9fd90d0a",
+      "timestamp": "2026-01-20T07:35:22.316Z",
+      "category": "profitability",
+      "metric": "Penti - MKT %",
+      "value": 8.7,
+      "source": "1768894521833-06138e8d2a905535",
+      "metadata": {
+        "sourceType": "pdf",
+        "brand": "Penti"
+      }
+    },
+    {
+      "id": "1768894522320-8e7d561b4944ed11",
+      "timestamp": "2026-01-20T07:35:22.316Z",
+      "category": "profitability",
+      "metric": "Penti - DC %",
+      "value": 0,
+      "source": "1768894521833-06138e8d2a905535",
+      "metadata": {
+        "sourceType": "pdf",
+        "brand": "Penti"
+      }
+    },
+    {
+      "id": "1768894522320-a9bd6086a933cc92",
+      "timestamp": "2026-01-20T07:35:22.316Z",
+      "category": "profitability",
+      "metric": "Penti - IOWC %",
+      "value": 0,
+      "source": "1768894521833-06138e8d2a905535",
+      "metadata": {
+        "sourceType": "pdf",
+        "brand": "Penti"
+      }
+    },
+    {
+      "id": "1768894522320-8e01bea32d816e54",
+      "timestamp": "2026-01-20T07:35:22.316Z",
+      "category": "profitability",
+      "metric": "Penti - CM2 %",
+      "value": 0,
+      "source": "1768894521833-06138e8d2a905535",
+      "metadata": {
+        "sourceType": "pdf",
+        "brand": "Penti"
+      }
+    },
+    {
+      "id": "1768894522320-4a055a0b80d49efe",
+      "timestamp": "2026-01-20T07:35:22.316Z",
+      "category": "profitability",
+      "metric": "French Connection - GM %",
+      "value": 30.5,
+      "source": "1768894521833-06138e8d2a905535",
+      "metadata": {
+        "sourceType": "pdf",
+        "brand": "French Connection"
+      }
+    },
+    {
+      "id": "1768894522320-a6d24944a551039b",
+      "timestamp": "2026-01-20T07:35:22.316Z",
+      "category": "profitability",
+      "metric": "French Connection - MKT %",
+      "value": 5.7,
+      "source": "1768894521833-06138e8d2a905535",
+      "metadata": {
+        "sourceType": "pdf",
+        "brand": "French Connection"
+      }
+    },
+    {
+      "id": "1768894522320-234a058cace0a948",
+      "timestamp": "2026-01-20T07:35:22.316Z",
+      "category": "profitability",
+      "metric": "French Connection - DC %",
+      "value": 0,
+      "source": "1768894521833-06138e8d2a905535",
+      "metadata": {
+        "sourceType": "pdf",
+        "brand": "French Connection"
+      }
+    },
+    {
+      "id": "1768894522320-22adaca578af1a22",
+      "timestamp": "2026-01-20T07:35:22.316Z",
+      "category": "profitability",
+      "metric": "French Connection - IOWC %",
+      "value": 0,
+      "source": "1768894521833-06138e8d2a905535",
+      "metadata": {
+        "sourceType": "pdf",
+        "brand": "French Connection"
+      }
+    },
+    {
+      "id": "1768894522320-201f98080719736d",
+      "timestamp": "2026-01-20T07:35:22.316Z",
+      "category": "profitability",
+      "metric": "French Connection - CM2 %",
+      "value": 0,
+      "source": "1768894521833-06138e8d2a905535",
+      "metadata": {
+        "sourceType": "pdf",
+        "brand": "French Connection"
+      }
+    },
+    {
+      "id": "1768894522320-30117424b892b099",
+      "timestamp": "2026-01-20T07:35:22.316Z",
+      "category": "profitability",
+      "metric": "CAMPUS - GM %",
+      "value": 60.52,
+      "source": "1768894521833-06138e8d2a905535",
+      "metadata": {
+        "sourceType": "pdf",
+        "brand": "CAMPUS"
+      }
+    },
+    {
+      "id": "1768894522320-67e254141827eb8a",
+      "timestamp": "2026-01-20T07:35:22.316Z",
+      "category": "profitability",
+      "metric": "CAMPUS - MKT %",
+      "value": 1.8,
+      "source": "1768894521833-06138e8d2a905535",
+      "metadata": {
+        "sourceType": "pdf",
+        "brand": "CAMPUS"
+      }
+    },
+    {
+      "id": "1768894522321-2164a7844f9c55b7",
+      "timestamp": "2026-01-20T07:35:22.316Z",
+      "category": "profitability",
+      "metric": "CAMPUS - DC %",
+      "value": 0,
+      "source": "1768894521833-06138e8d2a905535",
+      "metadata": {
+        "sourceType": "pdf",
+        "brand": "CAMPUS"
+      }
+    },
+    {
+      "id": "1768894522321-e2ff6e6e731763a9",
+      "timestamp": "2026-01-20T07:35:22.316Z",
+      "category": "profitability",
+      "metric": "CAMPUS - IOWC %",
+      "value": 0,
+      "source": "1768894521833-06138e8d2a905535",
+      "metadata": {
+        "sourceType": "pdf",
+        "brand": "CAMPUS"
+      }
+    },
+    {
+      "id": "1768894522321-8df8d64ec430f24b",
+      "timestamp": "2026-01-20T07:35:22.316Z",
+      "category": "profitability",
+      "metric": "CAMPUS - CM2 %",
+      "value": 0,
+      "source": "1768894521833-06138e8d2a905535",
+      "metadata": {
+        "sourceType": "pdf",
+        "brand": "CAMPUS"
+      }
+    }
+  ],
+  "sources": [
+    "1768894521833-06138e8d2a905535"
+  ],
+  "consolidatedAt": "2026-01-20T07:35:22.322Z",
+  "timeRange": {
+    "start": "2026-01-20T07:35:22.316Z",
+    "end": "2026-01-20T07:35:22.316Z"
+  },
+  "categories": [
+    "financial",
+    "brand-performance",
+    "channel-performance",
+    "profitability"
+  ],
+  "metrics": [
+    "Last Day Revenue",
+    "MTD Revenue",
+    "USPA - KSA - MTD Revenue",
+    "Penti - KSA - MTD Revenue",
+    "French Connection - KSA - MTD Revenue",
+    "CAMPUS - KSA - MTD Revenue",
+    "USPA - UAE - MTD Revenue",
+    "Penti - UAE - MTD Revenue",
+    "French Connection - UAE - MTD Revenue",
+    "CAMPUS - UAE - MTD Revenue",
+    "Namshi - MTD Revenue",
+    "Noon - MTD Revenue",
+    "CP - MTD Revenue",
+    "Amazon_1P - MTD Revenue",
+    "Trendyol - MTD Revenue",
+    "USPA - GM %",
+    "USPA - MKT %",
+    "USPA - DC %",
+    "USPA - IOWC %",
+    "USPA - CM2 %",
+    "Penti - GM %",
+    "Penti - MKT %",
+    "Penti - DC %",
+    "Penti - IOWC %",
+    "Penti - CM2 %",
+    "French Connection - GM %",
+    "French Connection - MKT %",
+    "French Connection - DC %",
+    "French Connection - IOWC %",
+    "French Connection - CM2 %",
+    "CAMPUS - GM %",
+    "CAMPUS - MKT %",
+    "CAMPUS - DC %",
+    "CAMPUS - IOWC %",
+    "CAMPUS - CM2 %"
+  ]
+}

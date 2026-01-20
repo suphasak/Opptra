@@ -54,3 +54,8 @@ opptra.config.json
 data/*.csv
 data/*.json
 data/*.xlsx
+
+# Exception: allow final reports for sharing
+!reports-final/
+!reports-final/*.html
+!reports-final/*.json
