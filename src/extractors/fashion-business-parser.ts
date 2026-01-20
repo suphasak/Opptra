@@ -57,8 +57,9 @@ export class FashionBusinessParser {
     const metrics: BusinessMetric[] = [];
 
     // Pattern: Multi-line format for Last Day, MTD, Expected, Target, Variance
-    // Looking for: "Last Day\n11,992\nMTD\n270,790\n..."
-    const overallSection = this.extractLargeSection(text, 'Country-wise Revenue|Grand total', 2000);
+    // CRITICAL: Extract from "Profitability" section (JANUARY data), NOT "Country-wise Revenue" or "Channel Mix"
+    // Profitability section has the correct current month MTD with Target and Variance
+    const overallSection = this.extractLargeSection(text, 'Profitability.*%', 1000);
 
     if (overallSection) {
 
