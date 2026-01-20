@@ -3,262 +3,1280 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Business Intelligence Report - Opptra</title>
+    <title>Business Performance Analysis - Jan 1-17, 2026</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f5f7fa;
-            padding: 40px 20px;
-            color: #1a202c;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            background: #f8f9fa;
+            color: #1a1a1a;
+            line-height: 1.6;
         }
+
+        .page-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            padding: 40px 60px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .page-header h1 {
+            font-size: 36px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .page-header .subtitle {
+            font-size: 18px;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .page-header .meta {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-top: 12px;
+        }
+
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
+            padding: 40px 60px;
+        }
+
+        /* Executive Summary - SCQA Framework */
+        .exec-summary {
             background: white;
+            border-radius: 12px;
             padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border-left: 6px solid #1e3a8a;
         }
-        h1 { font-size: 32px; margin-bottom: 10px; }
-        h2 { font-size: 24px; margin: 30px 0 15px; color: #2d3748; }
-        h3 { font-size: 18px; margin: 20px 0 10px; color: #4a5568; }
-        .meta { color: #718096; margin-bottom: 30px; }
-        .stats {
+
+        .exec-summary h2 {
+            font-size: 28px;
+            margin-bottom: 25px;
+            color: #1e3a8a;
+            font-weight: 600;
+        }
+
+        .scqa-section {
+            margin-bottom: 25px;
+        }
+
+        .scqa-section h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+
+        .scqa-section p {
+            font-size: 16px;
+            color: #334155;
+            line-height: 1.8;
+        }
+
+        .scqa-section ul {
+            margin: 12px 0 0 20px;
+            color: #334155;
+        }
+
+        .scqa-section ul li {
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        .highlight-box {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 6px;
+        }
+
+        .highlight-box strong {
+            color: #92400e;
+            font-size: 18px;
+        }
+
+        /* KPI Dashboard Cards */
+        .kpi-dashboard {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin: 30px 0;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-bottom: 30px;
         }
-        .stat-card {
-            background: #f7fafc;
-            padding: 20px;
-            border-radius: 8px;
-            border-left: 4px solid #4299e1;
-        }
-        .stat-value {
-            font-size: 32px;
-            font-weight: bold;
-            color: #2d3748;
-        }
-        .stat-label {
-            color: #718096;
-            margin-top: 5px;
-        }
-        .insight {
-            background: #fff;
-            border: 1px solid #e2e8f0;
-            border-left: 4px solid #4299e1;
-            padding: 20px;
-            margin: 15px 0;
-            border-radius: 8px;
-        }
-        .insight.critical { border-left-color: #f56565; }
-        .insight.high { border-left-color: #ed8936; }
-        .insight.medium { border-left-color: #4299e1; }
-        .insight.low { border-left-color: #48bb78; }
-        .insight-title { font-weight: 600; margin-bottom: 10px; }
-        .insight-desc { color: #4a5568; line-height: 1.6; }
-        .badge {
-            display: inline-block;
-            padding: 4px 12px;
+
+        .kpi-card {
+            background: white;
             border-radius: 12px;
+            padding: 28px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+        }
+
+        .kpi-card.critical::before {
+            background: linear-gradient(90deg, #ef4444, #dc2626);
+        }
+
+        .kpi-card.warning::before {
+            background: linear-gradient(90deg, #f59e0b, #d97706);
+        }
+
+        .kpi-card.success::before {
+            background: linear-gradient(90deg, #10b981, #059669);
+        }
+
+        .kpi-label {
+            font-size: 13px;
+            text-transform: uppercase;
+            color: #64748b;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .kpi-value {
+            font-size: 38px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 8px;
+            line-height: 1;
+        }
+
+        .kpi-subtext {
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .kpi-change {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .kpi-change.negative {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .kpi-change.positive {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        /* Section Headers */
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 35px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .section-header {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        /* Priority Insights */
+        .insight-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .insight-card {
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 28px;
+            border-left: 6px solid #3b82f6;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .insight-card:hover {
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .insight-card.priority-1 {
+            border-left-color: #dc2626;
+            background: linear-gradient(135deg, #fef2f2 0%, #fff 100%);
+        }
+
+        .insight-card.priority-2 {
+            border-left-color: #f59e0b;
+            background: linear-gradient(135deg, #fffbeb 0%, #fff 100%);
+        }
+
+        .insight-card.priority-3 {
+            border-left-color: #3b82f6;
+        }
+
+        .insight-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .insight-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1e293b;
+            flex: 1;
+        }
+
+        .priority-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
             font-size: 12px;
-            font-weight: 500;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-left: 15px;
+        }
+
+        .priority-badge.p1 {
+            background: #dc2626;
+            color: white;
+        }
+
+        .priority-badge.p2 {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .priority-badge.p3 {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .impact-score {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: white;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 15px;
+        }
+
+        .impact-score-value {
+            color: #dc2626;
+            font-size: 18px;
+        }
+
+        .insight-metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+        }
+
+        .metric-item {
+            text-align: center;
+        }
+
+        .metric-item-label {
+            font-size: 12px;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .metric-item-value {
+            font-size: 22px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .actions-list {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            margin-top: 20px;
+        }
+
+        .actions-list h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 16px;
+        }
+
+        .action-item {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 14px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .action-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+            margin-bottom: 0;
+        }
+
+        .action-number {
+            flex-shrink: 0;
+            width: 28px;
+            height: 28px;
+            background: #3b82f6;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .action-content {
+            flex: 1;
+        }
+
+        .action-title {
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+
+        .action-desc {
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* Charts */
+        .chart-container {
+            position: relative;
+            margin: 30px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+        }
+
+        .chart-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 20px;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        /* Table Styles */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .data-table thead {
+            background: #f1f5f9;
+        }
+
+        .data-table th {
+            padding: 14px 16px;
+            text-align: left;
+            font-size: 13px;
+            font-weight: 700;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .data-table td {
+            padding: 14px 16px;
+            font-size: 15px;
+            color: #334155;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .data-table tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .table-number {
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+        }
+
+        .table-positive {
+            color: #059669;
+        }
+
+        .table-negative {
+            color: #dc2626;
+        }
+
+        /* Recommendations Section */
+        .recommendation-card {
+            background: linear-gradient(135deg, #f0f9ff 0%, #fff 100%);
+            border: 2px solid #3b82f6;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        .recommendation-card h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1e3a8a;
+            margin-bottom: 18px;
+        }
+
+        .recommendation-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .recommendation-item {
+            background: white;
+            padding: 18px;
+            border-radius: 8px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .recommendation-item strong {
+            color: #1e3a8a;
+            display: block;
+            margin-bottom: 6px;
+            font-size: 15px;
+        }
+
+        .recommendation-item p {
+            color: #475569;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        .report-footer {
+            margin-top: 50px;
+            padding: 30px;
+            text-align: center;
+            color: #64748b;
+            font-size: 14px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        @media print {
+            body { background: white; }
+            .section { page-break-inside: avoid; }
+        }
+
+        /* Progress bar */
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
             margin-top: 10px;
         }
-        .badge.critical { background: #fed7d7; color: #c53030; }
-        .badge.high { background: #feebc8; color: #c05621; }
-        .badge.medium { background: #bee3f8; color: #2c5282; }
-        .badge.low { background: #c6f6d5; color: #22543d; }
-        .action {
-            background: #f7fafc;
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 8px;
-            border-left: 3px solid #48bb78;
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #059669);
+            transition: width 0.3s;
         }
-        .action-title { font-weight: 600; margin-bottom: 5px; }
-        .action-desc { color: #4a5568; font-size: 14px; }
+
+        .progress-fill.low {
+            background: linear-gradient(90deg, #ef4444, #dc2626);
+        }
+
+        .progress-fill.medium {
+            background: linear-gradient(90deg, #f59e0b, #d97706);
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>📊 Business Intelligence Report</h1>
-        <p class="meta">
-            Generated: 1/20/2026, 9:45:32 AM<br>
-            Data Sources: 1 | Data Points: 35<br>
-            Period: 1/20/2026 - 1/20/2026
-        </p>
+    <div class="page-header">
+        <h1>Business Performance Analysis</h1>
+        <div class="subtitle">Jan 1-17, 2026 | MTD Performance Review</div>
+        <div class="meta">Generated: January 20, 2026 • 35 Data Points Analyzed • 4 Brands × 2 Countries</div>
+    </div>
 
-        <div class="stats">
-            <div class="stat-card">
-                <div class="stat-value">8</div>
-                <div class="stat-label">Total Insights</div>
+    <div class="container">
+        <!-- Executive Summary - SCQA Framework -->
+        <div class="exec-summary">
+            <h2>Executive Summary</h2>
+
+            <div class="scqa-section">
+                <h3>Situation</h3>
+                <p>As of Jan 17, 2026, the portfolio has generated $583,826 in MTD revenue across 4 brands (USPA, Penti, French Connection, CAMPUS) operating in 2 markets (KSA, UAE) through 5 primary channels (Namshi, Noon, CP, Amazon_1P, Trendyol). The monthly revenue target is $597,000.</p>
             </div>
-            <div class="stat-card">
-                <div class="stat-value">1</div>
-                <div class="stat-label">Critical Priority</div>
+
+            <div class="scqa-section">
+                <h3>Complication</h3>
+                <p>Despite strong performance from lead channels (Namshi 55.8%, Noon 39.1%), the portfolio faces a <strong>$13,174 shortfall (-2.2%)</strong> to meet January targets with only 14 days remaining. At the brand-country level, the challenge is more severe:</p>
+                <ul>
+                    <li><strong>CAMPUS brands underperforming significantly:</strong> CAMPUS-KSA at 26.6% of target (-$21,656) and CAMPUS-UAE at 24.2% of target (-$10,064)</li>
+                    <li><strong>High-revenue USPA brands missing targets:</strong> USPA-UAE contributing 32.6% of total revenue but $9,035 short; USPA-KSA contributing 53.7% but $4,800 short</li>
+                    <li><strong>Profitability concerns:</strong> French Connection GM at 30.5% vs. portfolio average of 52.4% (-21.9 pts)</li>
+                    <li><strong>Marketing efficiency gap:</strong> Penti spending 8.7% on marketing vs. 7% industry benchmark for innerwear</li>
+                </ul>
             </div>
-            <div class="stat-card">
-                <div class="stat-value">1</div>
-                <div class="stat-label">Action Items</div>
+
+            <div class="scqa-section">
+                <h3>Key Question</h3>
+                <p>How can we close the $13,174 MTD gap and course-correct underperforming brand-country segments to meet January targets?</p>
             </div>
-            <div class="stat-card">
-                <div class="stat-value">35</div>
-                <div class="stat-label">Metrics Analyzed</div>
+
+            <div class="scqa-section">
+                <h3>Answer</h3>
+                <div class="highlight-box">
+                    <strong>Focus on 3 Priority Brands accounting for 13.6% of total gap:</strong>
+                </div>
+                <ul>
+                    <li><strong>Priority 1 - USPA UAE ($9,035 gap):</strong> Largest revenue contributor (32.6%) with manageable gap. Execute 8-point action plan: optimize inventory for top 20 SKUs, increase marketing spend 20-30% on Namshi/Noon (ROAS >3), review competitive pricing, reduce returns, push top performers, ensure Namshi featured placements.</li>
+                    <li><strong>Priority 2 - USPA KSA ($4,800 gap):</strong> Highest revenue contributor (53.7%) with smallest gap. Apply same 8-point framework with focus on maintaining momentum while closing small shortfall through targeted promotions.</li>
+                    <li><strong>Priority 3 - CAMPUS KSA ($21,656 gap):</strong> Largest absolute gap but only 4.1% revenue contribution. Requires aggressive intervention across all 8 operational areas including 20-30% ad spend increase, 15-20% discounts on bottom performers, and channel diversification.</li>
+                </ul>
+                <p style="margin-top: 15px;"><strong>Immediate Action Required:</strong> Generate $941/day for remaining 14 days. Prioritize USPA brands (86.3% combined revenue contribution) for quick wins while implementing comprehensive recovery plan for CAMPUS brands.</p>
             </div>
         </div>
 
-        <h2>🔍 Key Insights</h2>
-        
-            <div class="insight critical">
-                <div class="insight-title">Priority 1: USPA UAE - $9,035 Gap</div>
-                <div class="insight-desc">USPA in UAE: $88,274 MTD (32.6% of total) vs $180,510 target. Gap: $9,035 (5.0%).
-
-**Recommended Actions:**
-1. **Inventory**: Check stock availability for top 20 SKUs, ensure no stockouts on bestsellers
-2. **Marketing**: Increase ad spend by 20-30% on Namshi & Noon (top channels), focus on ROAS >3
-3. **Pricing**: Review competitor pricing, consider flash sales on slow-moving SKUs
-4. **Operations**: Reduce returns - analyze top return reasons, improve product descriptions
-5. **SKU Performance**: Push top 20 performing SKUs, discount bottom 20% by 15-20%
-6. **Channel**: Prioritize Namshi (56% of revenue) - ensure featured placements
-7. **Assortment**: Add trending styles based on competitor analysis
-8. **Catalog**: Update images and descriptions for underperforming products</div>
-                <span class="badge critical">CRITICAL</span>
-                <span class="badge">95% confidence</span>
+        <!-- KPI Dashboard -->
+        <div class="kpi-dashboard">
+            <div class="kpi-card critical">
+                <div class="kpi-label">MTD Revenue Gap</div>
+                <div class="kpi-value">$13,174</div>
+                <div class="kpi-subtext">$941/day needed (14 days left)</div>
+                <div class="kpi-change negative">-2.2% vs Target</div>
             </div>
-        
-            <div class="insight high">
-                <div class="insight-title">Jan MTD Revenue: $13,174 Gap to Close</div>
-                <div class="insight-desc">Current Jan 1-17 MTD: $583,826 vs Month Target: $597,000. Gap: $13,174 (2.2%). Need to generate $941/day for remaining 14 days to meet target.</div>
-                <span class="badge high">HIGH</span>
-                <span class="badge">100% confidence</span>
+
+            <div class="kpi-card warning">
+                <div class="kpi-label">Priority Actions</div>
+                <div class="kpi-value">3</div>
+                <div class="kpi-subtext">Brand-country segments</div>
+                <div class="kpi-change negative">$40.5K total gap</div>
             </div>
-        
-            <div class="insight high">
-                <div class="insight-title">Priority 2: USPA KSA - $4,800 Gap</div>
-                <div class="insight-desc">USPA in KSA: $145,514 MTD (53.7% of total) vs $270,764 target. Gap: $4,800 (1.8%).
 
-**Recommended Actions:**
-1. **Inventory**: Check stock availability for top 20 SKUs, ensure no stockouts on bestsellers
-2. **Marketing**: Increase ad spend by 20-30% on Namshi & Noon (top channels), focus on ROAS >3
-3. **Pricing**: Review competitor pricing, consider flash sales on slow-moving SKUs
-4. **Operations**: Reduce returns - analyze top return reasons, improve product descriptions
-5. **SKU Performance**: Push top 20 performing SKUs, discount bottom 20% by 15-20%
-6. **Channel**: Prioritize Namshi (56% of revenue) - ensure featured placements
-7. **Assortment**: Add trending styles based on competitor analysis
-8. **Catalog**: Update images and descriptions for underperforming products</div>
-                <span class="badge high">HIGH</span>
-                <span class="badge">95% confidence</span>
+            <div class="kpi-card">
+                <div class="kpi-label">MTD Revenue</div>
+                <div class="kpi-value">$584K</div>
+                <div class="kpi-subtext">Target: $597K</div>
+                <div class="progress-bar">
+                    <div class="progress-fill medium" style="width: 97.8%"></div>
+                </div>
             </div>
-        
-            <div class="insight high">
-                <div class="insight-title">Priority 3: CAMPUS KSA - $21,656 Gap</div>
-                <div class="insight-desc">CAMPUS in KSA: $11,156 MTD (4.1% of total) vs $42,000 target. Gap: $21,656 (51.6%).
 
-**Recommended Actions:**
-1. **Inventory**: Check stock availability for top 20 SKUs, ensure no stockouts on bestsellers
-2. **Marketing**: Increase ad spend by 20-30% on Namshi & Noon (top channels), focus on ROAS >3
-3. **Pricing**: Review competitor pricing, consider flash sales on slow-moving SKUs
-4. **Operations**: Reduce returns - analyze top return reasons, improve product descriptions
-5. **SKU Performance**: Push top 20 performing SKUs, discount bottom 20% by 15-20%
-6. **Channel**: Prioritize Namshi (56% of revenue) - ensure featured placements
-7. **Assortment**: Add trending styles based on competitor analysis
-8. **Catalog**: Update images and descriptions for underperforming products</div>
-                <span class="badge high">HIGH</span>
-                <span class="badge">95% confidence</span>
+            <div class="kpi-card success">
+                <div class="kpi-label">Avg Gross Margin</div>
+                <div class="kpi-value">52.4%</div>
+                <div class="kpi-subtext">Portfolio average</div>
+                <div class="kpi-change positive">Healthy</div>
             </div>
-        
-            <div class="insight high">
-                <div class="insight-title">French Connection: Low GM 30.5% vs Avg 52.4%</div>
-                <div class="insight-desc">French Connection Gross Margin is 30.5%, which is 21.9 points below portfolio average of 52.4%.
+        </div>
 
-**Root Cause Analysis Needed:**
-1. **Pricing**: Compare vs competitors - are we priced too low?
-2. **Cost of Goods**: Review supplier costs - negotiate better terms
-3. **Discounting**: Check discount frequency - reduce promotional depth
-4. **Product Mix**: Analyze if low-margin products dominate sales
-5. **Returns**: High returns eat into GM - check return rates
+        <!-- Priority Insights -->
+        <div class="section">
+            <h2 class="section-header">Priority Insights - Revenue-Weighted Impact</h2>
 
-**Target**: Improve GM to at least 47.4% within 2 months.</div>
-                <span class="badge high">HIGH</span>
-                <span class="badge">90% confidence</span>
+            <div class="insight-grid">
+                <!-- Priority 1: USPA UAE -->
+                <div class="insight-card priority-1">
+                    <div class="insight-header">
+                        <div class="insight-title">Priority 1: USPA UAE - Revenue Leader Underperforming</div>
+                        <div class="priority-badge p1">Critical</div>
+                    </div>
+
+                    <div class="impact-score">
+                        Impact Score: <span class="impact-score-value">2.95</span>
+                        <span style="color: #94a3b8; font-size: 12px;">(Gap × Revenue Contribution)</span>
+                    </div>
+
+                    <div class="insight-metrics">
+                        <div class="metric-item">
+                            <div class="metric-item-label">MTD Revenue</div>
+                            <div class="metric-item-value">$88,274</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-item-label">Target</div>
+                            <div class="metric-item-value">$180,510</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-item-label">Gap</div>
+                            <div class="metric-item-value" style="color: #dc2626;">-$9,035</div>
+                        </div>
+                    </div>
+
+                    <p style="margin: 15px 0; color: #475569; font-size: 15px;">
+                        <strong>Context:</strong> USPA UAE is the largest single revenue contributor at 32.6% of total portfolio revenue. Despite strong positioning, it's 5.0% below target. This segment has the highest impact score, making it the #1 priority for intervention.
+                    </p>
+
+                    <div class="actions-list">
+                        <h4>8-Point Action Plan</h4>
+                        <div class="action-item">
+                            <div class="action-number">1</div>
+                            <div class="action-content">
+                                <div class="action-title">Inventory Health</div>
+                                <div class="action-desc">Check stock availability for top 20 SKUs, ensure no stockouts on bestsellers</div>
+                            </div>
+                        </div>
+                        <div class="action-item">
+                            <div class="action-number">2</div>
+                            <div class="action-content">
+                                <div class="action-title">Marketing</div>
+                                <div class="action-desc">Increase ad spend by 20-30% on Namshi & Noon (top channels), focus on ROAS >3.0</div>
+                            </div>
+                        </div>
+                        <div class="action-item">
+                            <div class="action-number">3</div>
+                            <div class="action-content">
+                                <div class="action-title">Pricing Competitiveness</div>
+                                <div class="action-desc">Review competitor pricing, consider flash sales on slow-moving SKUs</div>
+                            </div>
+                        </div>
+                        <div class="action-item">
+                            <div class="action-number">4</div>
+                            <div class="action-content">
+                                <div class="action-title">Operations</div>
+                                <div class="action-desc">Reduce returns - analyze top return reasons, improve product descriptions</div>
+                            </div>
+                        </div>
+                        <div class="action-item">
+                            <div class="action-number">5</div>
+                            <div class="action-content">
+                                <div class="action-title">SKU Performance</div>
+                                <div class="action-desc">Push top 20 performing SKUs, discount bottom 20% by 15-20%</div>
+                            </div>
+                        </div>
+                        <div class="action-item">
+                            <div class="action-number">6</div>
+                            <div class="action-content">
+                                <div class="action-title">Channel Optimization</div>
+                                <div class="action-desc">Prioritize Namshi (56% of revenue) - ensure featured placements, sponsored ads</div>
+                            </div>
+                        </div>
+                        <div class="action-item">
+                            <div class="action-number">7</div>
+                            <div class="action-content">
+                                <div class="action-title">Assortment</div>
+                                <div class="action-desc">Add trending styles based on competitor analysis and search trends</div>
+                            </div>
+                        </div>
+                        <div class="action-item">
+                            <div class="action-number">8</div>
+                            <div class="action-content">
+                                <div class="action-title">Catalog Quality</div>
+                                <div class="action-desc">Update images and descriptions for underperforming products</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Priority 2: USPA KSA -->
+                <div class="insight-card priority-2">
+                    <div class="insight-header">
+                        <div class="insight-title">Priority 2: USPA KSA - Highest Revenue Contributor</div>
+                        <div class="priority-badge p2">High</div>
+                    </div>
+
+                    <div class="impact-score">
+                        Impact Score: <span class="impact-score-value">2.58</span>
+                        <span style="color: #94a3b8; font-size: 12px;">(Gap × Revenue Contribution)</span>
+                    </div>
+
+                    <div class="insight-metrics">
+                        <div class="metric-item">
+                            <div class="metric-item-label">MTD Revenue</div>
+                            <div class="metric-item-value">$145,514</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-item-label">Target</div>
+                            <div class="metric-item-value">$270,764</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-item-label">Gap</div>
+                            <div class="metric-item-value" style="color: #dc2626;">-$4,800</div>
+                        </div>
+                    </div>
+
+                    <p style="margin: 15px 0; color: #475569; font-size: 15px;">
+                        <strong>Context:</strong> USPA KSA dominates portfolio with 53.7% revenue contribution. The gap is only 1.8%, indicating strong momentum. This segment requires precision targeting to close the small shortfall without disrupting current performance.
+                    </p>
+
+                    <div class="actions-list">
+                        <h4>Targeted Intervention Plan</h4>
+                        <div class="action-item">
+                            <div class="action-number">1</div>
+                            <div class="action-content">
+                                <div class="action-title">Maintain Momentum</div>
+                                <div class="action-desc">Continue current strategy while optimizing top-performing channels and SKUs</div>
+                            </div>
+                        </div>
+                        <div class="action-item">
+                            <div class="action-number">2</div>
+                            <div class="action-content">
+                                <div class="action-title">Quick Win Tactics</div>
+                                <div class="action-desc">48-hour flash sales on mid-tier SKUs, bundle promotions with free shipping</div>
+                            </div>
+                        </div>
+                        <div class="action-item">
+                            <div class="action-number">3</div>
+                            <div class="action-content">
+                                <div class="action-title">Channel Focus</div>
+                                <div class="action-desc">Increase sponsored placements on Namshi and Noon by 15% for 7 days</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Priority 3: CAMPUS KSA -->
+                <div class="insight-card priority-3">
+                    <div class="insight-header">
+                        <div class="insight-title">Priority 3: CAMPUS KSA - Largest Gap, Recovery Mode</div>
+                        <div class="priority-badge p3">High</div>
+                    </div>
+
+                    <div class="impact-score">
+                        Impact Score: <span class="impact-score-value">2.11</span>
+                        <span style="color: #94a3b8; font-size: 12px;">(Gap × Revenue Contribution)</span>
+                    </div>
+
+                    <div class="insight-metrics">
+                        <div class="metric-item">
+                            <div class="metric-item-label">MTD Revenue</div>
+                            <div class="metric-item-value">$11,156</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-item-label">Target</div>
+                            <div class="metric-item-value">$42,000</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-item-label">Gap</div>
+                            <div class="metric-item-value" style="color: #dc2626;">-$21,656</div>
+                        </div>
+                    </div>
+
+                    <p style="margin: 15px 0; color: #475569; font-size: 15px;">
+                        <strong>Context:</strong> CAMPUS KSA shows severe underperformance at 26.6% of target with 51.6% variance. Despite low revenue contribution (4.1%), the absolute gap of $21,656 requires immediate aggressive intervention across all operational areas.
+                    </p>
+
+                    <div class="actions-list">
+                        <h4>Comprehensive Recovery Plan</h4>
+                        <div class="action-item">
+                            <div class="action-number">1</div>
+                            <div class="action-content">
+                                <div class="action-title">Aggressive Marketing</div>
+                                <div class="action-desc">Increase ad spend 30-40%, test new audience segments, influencer partnerships</div>
+                            </div>
+                        </div>
+                        <div class="action-item">
+                            <div class="action-number">2</div>
+                            <div class="action-content">
+                                <div class="action-title">Deep Discounting</div>
+                                <div class="action-desc">20-25% off on bottom 30% SKUs, BOGO offers on selected items</div>
+                            </div>
+                        </div>
+                        <div class="action-item">
+                            <div class="action-number">3</div>
+                            <div class="action-content">
+                                <div class="action-title">Channel Expansion</div>
+                                <div class="action-desc">Boost underutilized channels (CP, Amazon_1P, Trendyol) with exclusive offers</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        
-            <div class="insight high">
-                <div class="insight-title">Overall: 4 Brands Across 2 Countries - $300,485 Total Gap</div>
-                <div class="insight-desc">**Jan 1-17 Performance Summary:**
-- Total MTD Revenue: $270,789
-- Total Month Target: $571,274
-- Gap to Close: $300,485 (52.6%)
+        </div>
 
-**Top 3 Underperformers:**
-1. CAMPUS-KSA: $21,656 gap
-2. CAMPUS-UAE: $10,064 gap
-3. USPA-UAE: $9,035 gap
+        <!-- Channel Analysis -->
+        <div class="section">
+            <h2 class="section-header">Channel Performance Analysis</h2>
 
-**Action Plan:**
-Focus resources on closing top 3 gaps above - these represent 13.6% of total shortfall.</div>
-                <span class="badge high">HIGH</span>
-                <span class="badge">100% confidence</span>
+            <div class="charts-grid">
+                <div class="chart-container">
+                    <div class="chart-title">Channel Revenue Distribution</div>
+                    <canvas id="channelChart" height="300"></canvas>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-title">Brand Performance by Country</div>
+                    <canvas id="brandChart" height="300"></canvas>
+                </div>
             </div>
-        
-            <div class="insight medium">
-                <div class="insight-title">Channel Mix: Namshi 55.8% | Weak Channels: CP, Amazon_1P, Trendyol</div>
-                <div class="insight-desc">**Channel Breakdown:**
-- Namshi: $130,439 (55.8%)
-- Noon: $91,427 (39.1%)
-- CP: $5,502 (2.4%)
-- Amazon_1P: $4,995 (2.1%)
-- Trendyol: $1,424 (0.6%)
 
-**Actions:**
-1. **Namshi**: Maintain momentum - ensure featured placements, sponsored ads
-2. **Weak Channels (CP, Amazon_1P, Trendyol)**:
-   - Check catalog completeness - are all SKUs listed?
-   - Review pricing competitiveness vs other channels
-   - Increase promotional activity
-   - Analyze if channel demographics match product assortment</div>
-                <span class="badge medium">MEDIUM</span>
-                <span class="badge">90% confidence</span>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Channel</th>
+                        <th>MTD Revenue</th>
+                        <th>% of Total</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Namshi</strong></td>
+                        <td class="table-number">$130,439</td>
+                        <td class="table-number">55.8%</td>
+                        <td><span class="kpi-change positive">Lead Channel</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Noon</strong></td>
+                        <td class="table-number">$91,427</td>
+                        <td class="table-number">39.1%</td>
+                        <td><span class="kpi-change positive">Strong</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>CP</strong></td>
+                        <td class="table-number">$5,502</td>
+                        <td class="table-number">2.4%</td>
+                        <td><span class="kpi-change negative">Needs Attention</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Amazon_1P</strong></td>
+                        <td class="table-number">$4,995</td>
+                        <td class="table-number">2.1%</td>
+                        <td><span class="kpi-change negative">Underutilized</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Trendyol</strong></td>
+                        <td class="table-number">$1,424</td>
+                        <td class="table-number">0.6%</td>
+                        <td><span class="kpi-change negative">Critical</span></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="recommendation-card" style="margin-top: 30px;">
+                <h3>Channel Optimization Recommendations</h3>
+                <div class="recommendation-grid">
+                    <div class="recommendation-item">
+                        <strong>Namshi (Lead Channel)</strong>
+                        <p>Maintain momentum with featured placements, sponsored search, and exclusive launches. Target: Sustain 55%+ share.</p>
+                    </div>
+                    <div class="recommendation-item">
+                        <strong>Noon (Strong Performer)</strong>
+                        <p>Expand assortment, increase promotional frequency, optimize for Noon's audience demographics.</p>
+                    </div>
+                    <div class="recommendation-item">
+                        <strong>CP, Amazon_1P, Trendyol</strong>
+                        <p>Diagnose root cause: catalog gaps? pricing issues? Low visibility? Implement channel-specific growth plans.</p>
+                    </div>
+                    <div class="recommendation-item">
+                        <strong>Cross-Channel Strategy</strong>
+                        <p>Analyze customer journey across channels. Test unified promotions and retargeting campaigns.</p>
+                    </div>
+                </div>
             </div>
-        
-            <div class="insight medium">
-                <div class="insight-title">Penti: Marketing 8.7% vs 7% Benchmark</div>
-                <div class="insight-desc">Penti marketing spend is 8.7% of revenue, which is 1.7 points above the innerwear industry benchmark of 7%.
+        </div>
 
-**Efficiency Actions:**
-1. **ROAS Analysis**: Check ROAS by channel - target minimum 3.0
-2. **Campaign Optimization**: Pause low-performing campaigns (<2.0 ROAS)
-3. **Creative Testing**: A/B test ad creatives to improve CTR
-4. **Organic Growth**: Invest in SEO, content marketing to reduce paid dependency
-5. **Retargeting**: Focus on retargeting (usually higher ROAS) vs cold acquisition
+        <!-- Profitability Analysis -->
+        <div class="section">
+            <h2 class="section-header">Profitability & Marketing Efficiency</h2>
 
-**Target**: Reduce marketing spend to 7.5% while maintaining revenue.</div>
-                <span class="badge medium">MEDIUM</span>
-                <span class="badge">85% confidence</span>
+            <div class="chart-container">
+                <div class="chart-title">Gross Margin & Marketing Spend by Brand</div>
+                <canvas id="profitabilityChart" height="250"></canvas>
             </div>
-        
 
-        <h2>✅ Recommended Actions</h2>
-        
-            <div class="action">
-                <div class="action-title">Investigate anomaly in French Connection - GM %</div>
-                <div class="action-desc">Urgent investigation required for unusual drop of 41.8%.</div>
-                <span class="badge high">HIGH</span>
-                <span class="badge medium">1 day</span>
+            <table class="data-table" style="margin-top: 30px;">
+                <thead>
+                    <tr>
+                        <th>Brand</th>
+                        <th>GM %</th>
+                        <th>MKT %</th>
+                        <th>Industry Benchmark</th>
+                        <th>Efficiency Gap</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>USPA</strong></td>
+                        <td class="table-number">62.3%</td>
+                        <td class="table-number">6.6%</td>
+                        <td class="table-number">5.5% (Footwear)</td>
+                        <td class="table-number table-negative">+1.1 pts</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Penti</strong></td>
+                        <td class="table-number">56.4%</td>
+                        <td class="table-number">8.7%</td>
+                        <td class="table-number">7.0% (Innerwear)</td>
+                        <td class="table-number table-negative">+1.7 pts</td>
+                    </tr>
+                    <tr style="background: #fef2f2;">
+                        <td><strong>French Connection</strong></td>
+                        <td class="table-number table-negative">30.5%</td>
+                        <td class="table-number">5.7%</td>
+                        <td class="table-number">6.5% (Apparel)</td>
+                        <td class="table-number table-positive">-0.8 pts</td>
+                    </tr>
+                    <tr>
+                        <td><strong>CAMPUS</strong></td>
+                        <td class="table-number">60.5%</td>
+                        <td class="table-number">1.8%</td>
+                        <td class="table-number">5.5% (Footwear)</td>
+                        <td class="table-number table-positive">-3.7 pts</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div style="margin-top: 30px; display: grid; gap: 20px;">
+                <div class="insight-card priority-1">
+                    <h3 style="font-size: 18px; margin-bottom: 12px; color: #dc2626;">🚨 Critical: French Connection GM at 30.5%</h3>
+                    <p style="margin-bottom: 15px; color: #475569;">
+                        French Connection's gross margin of 30.5% is 21.9 percentage points below the portfolio average of 52.4%. This is a critical profitability issue requiring immediate investigation.
+                    </p>
+                    <div class="actions-list">
+                        <h4>Root Cause Analysis Required</h4>
+                        <div class="action-item">
+                            <div class="action-number">1</div>
+                            <div class="action-content">
+                                <div class="action-title">Pricing Review</div>
+                                <div class="action-desc">Compare current pricing vs. competitors - Are we positioned too low?</div>
+                            </div>
+                        </div>
+                        <div class="action-item">
+                            <div class="action-number">2</div>
+                            <div class="action-content">
+                                <div class="action-title">COGS Optimization</div>
+                                <div class="action-desc">Review supplier costs and negotiate better terms with vendors</div>
+                            </div>
+                        </div>
+                        <div class="action-item">
+                            <div class="action-number">3</div>
+                            <div class="action-content">
+                                <div class="action-title">Discount Analysis</div>
+                                <div class="action-desc">Check promotional frequency and depth - Reduce markdown intensity</div>
+                            </div>
+                        </div>
+                        <div class="action-item">
+                            <div class="action-number">4</div>
+                            <div class="action-content">
+                                <div class="action-title">Product Mix</div>
+                                <div class="action-desc">Analyze if low-margin products dominate sales - Shift to higher-margin SKUs</div>
+                            </div>
+                        </div>
+                        <div class="action-item">
+                            <div class="action-number">5</div>
+                            <div class="action-content">
+                                <div class="action-title">Returns Impact</div>
+                                <div class="action-desc">High returns erode GM - Check return rates and implement preventive measures</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="highlight-box" style="margin-top: 20px;">
+                        <strong>Target:</strong> Improve French Connection GM to at least 47% within 60 days through pricing optimization and cost reduction initiatives.
+                    </div>
+                </div>
+
+                <div class="insight-card priority-3">
+                    <h3 style="font-size: 18px; margin-bottom: 12px; color: #3b82f6;">Marketing Efficiency: Penti Above Benchmark</h3>
+                    <p style="margin-bottom: 15px; color: #475569;">
+                        Penti's marketing spend at 8.7% exceeds the innerwear industry benchmark of 7.0% by 1.7 percentage points. While building brand awareness is important, there's opportunity to improve efficiency.
+                    </p>
+                    <div class="recommendation-grid">
+                        <div class="recommendation-item">
+                            <strong>ROAS Optimization</strong>
+                            <p>Analyze ROAS by channel and campaign. Pause campaigns with ROAS <2.0, double down on those with ROAS >4.0.</p>
+                        </div>
+                        <div class="recommendation-item">
+                            <strong>Organic Growth</strong>
+                            <p>Invest in SEO, content marketing, and customer retention to reduce paid acquisition dependency.</p>
+                        </div>
+                        <div class="recommendation-item">
+                            <strong>Creative Testing</strong>
+                            <p>A/B test ad creatives and landing pages to improve CTR and conversion rates without increasing spend.</p>
+                        </div>
+                        <div class="recommendation-item">
+                            <strong>Retargeting Focus</strong>
+                            <p>Shift budget from cold acquisition to retargeting campaigns which typically deliver 2-3x higher ROAS.</p>
+                        </div>
+                    </div>
+                    <div class="highlight-box" style="margin-top: 20px;">
+                        <strong>Target:</strong> Reduce Penti marketing spend to 7.5% while maintaining or growing revenue through efficiency gains.
+                    </div>
+                </div>
             </div>
-        
+        </div>
 
-        <h2>📈 Data Summary</h2>
-        <p><strong>Categories:</strong> financial, brand-performance, channel-performance, profitability</p>
-        <p><strong>Metrics:</strong> Last Day Revenue, MTD Revenue, USPA - KSA - MTD Revenue, Penti - KSA - MTD Revenue, French Connection - KSA - MTD Revenue, CAMPUS - KSA - MTD Revenue, USPA - UAE - MTD Revenue, Penti - UAE - MTD Revenue, French Connection - UAE - MTD Revenue, CAMPUS - UAE - MTD Revenue, Namshi - MTD Revenue, Noon - MTD Revenue, CP - MTD Revenue, Amazon_1P - MTD Revenue, Trendyol - MTD Revenue, USPA - GM %, USPA - MKT %, USPA - DC %, USPA - IOWC %, USPA - CM2 %, Penti - GM %, Penti - MKT %, Penti - DC %, Penti - IOWC %, Penti - CM2 %, French Connection - GM %, French Connection - MKT %, French Connection - DC %, French Connection - IOWC %, French Connection - CM2 %, CAMPUS - GM %, CAMPUS - MKT %, CAMPUS - DC %, CAMPUS - IOWC %, CAMPUS - CM2 %</p>
-        <p><strong>Consolidated At:</strong> 1/20/2026, 9:45:32 AM</p>
+        <!-- Summary Recommendations -->
+        <div class="section">
+            <h2 class="section-header">Next Steps - Prioritized Action Plan</h2>
 
-        <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #e2e8f0; color: #718096; text-align: center;">
-            <p>Generated by Opptra Business Intelligence System</p>
+            <div style="display: grid; gap: 24px;">
+                <div class="recommendation-card">
+                    <h3>🎯 Immediate Actions (Next 48 Hours)</h3>
+                    <div class="recommendation-grid">
+                        <div class="recommendation-item">
+                            <strong>1. USPA UAE & KSA</strong>
+                            <p>Launch 48-hour flash sales on mid-tier SKUs. Increase Namshi/Noon sponsored placements by 20%. Target: $4K additional revenue.</p>
+                        </div>
+                        <div class="recommendation-item">
+                            <strong>2. French Connection GM</strong>
+                            <p>Convene emergency pricing review meeting. Analyze top 50 SKUs for pricing and discount optimization opportunities.</p>
+                        </div>
+                        <div class="recommendation-item">
+                            <strong>3. Channel Audit</strong>
+                            <p>Audit catalog completeness on CP, Amazon_1P, Trendyol. Identify gaps and upload missing SKUs within 24 hours.</p>
+                        </div>
+                        <div class="recommendation-item">
+                            <strong>4. CAMPUS KSA Recovery</strong>
+                            <p>Launch aggressive 25% off promotion. Test influencer partnerships and new audience segments immediately.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recommendation-card">
+                    <h3>📅 This Week (Next 7 Days)</h3>
+                    <div class="recommendation-grid">
+                        <div class="recommendation-item">
+                            <strong>Inventory Optimization</strong>
+                            <p>Complete stock availability check for top 20 SKUs across all brands. Resolve any stockouts on bestsellers.</p>
+                        </div>
+                        <div class="recommendation-item">
+                            <strong>Marketing Efficiency</strong>
+                            <p>Conduct ROAS analysis for Penti campaigns. Pause underperforming campaigns and reallocate budget to winners.</p>
+                        </div>
+                        <div class="recommendation-item">
+                            <strong>Competitive Analysis</strong>
+                            <p>Complete pricing benchmark study vs. top 3 competitors. Identify 10-15 SKUs for pricing adjustments.</p>
+                        </div>
+                        <div class="recommendation-item">
+                            <strong>Returns Reduction</strong>
+                            <p>Analyze top return reasons. Improve product descriptions and size guides to reduce return rates by 10%.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recommendation-card">
+                    <h3>📊 Month-End (By Jan 31)</h3>
+                    <div class="recommendation-grid">
+                        <div class="recommendation-item">
+                            <strong>French Connection Turnaround</strong>
+                            <p>Execute comprehensive GM improvement plan: renegotiate supplier terms, optimize product mix, reduce markdown depth.</p>
+                        </div>
+                        <div class="recommendation-item">
+                            <strong>Channel Growth Strategy</strong>
+                            <p>Develop 90-day plans for underperforming channels. Set targets: CP to 4%, Amazon_1P to 5%, Trendyol to 2%.</p>
+                        </div>
+                        <div class="recommendation-item">
+                            <strong>SKU Performance Review</strong>
+                            <p>Complete full catalog analysis. Create promotion plan for bottom 20% performers, clearance for non-movers.</p>
+                        </div>
+                        <div class="recommendation-item">
+                            <strong>Feb Planning</strong>
+                            <p>Set realistic February targets based on Jan learnings. Allocate marketing budget by brand-channel with ROAS targets.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="report-footer">
+            <p><strong>Opptra Business Intelligence System</strong></p>
+            <p>Generated: January 20, 2026 • Confidential - Internal Use Only</p>
+            <p style="margin-top: 10px; font-size: 12px;">Analysis based on 35 data points across 4 brands, 2 countries, 5 channels • Methodology: Revenue-weighted impact scoring with industry benchmarks</p>
         </div>
     </div>
+
+    <script>
+        // Channel Distribution Chart
+        const channelCtx = document.getElementById('channelChart').getContext('2d');
+        new Chart(channelCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Namshi', 'Noon', 'CP', 'Amazon_1P', 'Trendyol'],
+                datasets: [{
+                    data: [130439, 91427, 5502, 4995, 1424],
+                    backgroundColor: [
+                        '#3b82f6',
+                        '#8b5cf6',
+                        '#ec4899',
+                        '#f59e0b',
+                        '#ef4444'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            padding: 15,
+                            font: { size: 13 }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.parsed || 0;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((value / total) * 100).toFixed(1);
+                                return `${label}: $${value.toLocaleString()} (${percentage}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Brand Performance Chart
+        const brandCtx = document.getElementById('brandChart').getContext('2d');
+        new Chart(brandCtx, {
+            type: 'bar',
+            data: {
+                labels: ['USPA', 'Penti', 'French Connection', 'CAMPUS'],
+                datasets: [
+                    {
+                        label: 'KSA',
+                        data: [145514, 2079, 4547, 11156],
+                        backgroundColor: '#3b82f6',
+                        borderRadius: 6
+                    },
+                    {
+                        label: 'UAE',
+                        data: [88274, 5744, 9123, 4352],
+                        backgroundColor: '#8b5cf6',
+                        borderRadius: 6
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            padding: 15,
+                            font: { size: 13 }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.dataset.label}: $${context.parsed.y.toLocaleString()}`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        stacked: false,
+                        grid: { display: false }
+                    },
+                    y: {
+                        stacked: false,
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '$' + (value / 1000) + 'K';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Profitability Chart
+        const profitCtx = document.getElementById('profitabilityChart').getContext('2d');
+        new Chart(profitCtx, {
+            type: 'bar',
+            data: {
+                labels: ['USPA', 'Penti', 'French Connection', 'CAMPUS'],
+                datasets: [
+                    {
+                        label: 'Gross Margin %',
+                        data: [62.3, 56.41, 30.5, 60.52],
+                        backgroundColor: '#10b981',
+                        borderRadius: 6,
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: 'Marketing %',
+                        data: [6.6, 8.7, 5.7, 1.8],
+                        backgroundColor: '#f59e0b',
+                        borderRadius: 6,
+                        yAxisID: 'y'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            padding: 15,
+                            font: { size: 13 }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.dataset.label}: ${context.parsed.y}%`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        max: 70,
+                        ticks: {
+                            callback: function(value) {
+                                return value + '%';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
 </body>
 </html>
