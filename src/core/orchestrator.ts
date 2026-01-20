@@ -22,6 +22,7 @@ import { insightGenerator } from '../analyzers/insight-generator';
 import { actionPlanGenerator } from '../generators/action-plan-generator';
 import { timelineGenerator } from '../generators/timeline-generator';
 import { logger, startTimer } from '../utils/logger';
+import { fashionInsightsGenerator } from '../analyzers/fashion-insights';
 import { generateId } from '../utils/helpers';
 
 /**
@@ -96,6 +97,11 @@ export class OpptraBI {
         enablePrediction: false,
         confidenceThreshold: options.confidenceThreshold || 0.6,
       });
+
+      // Step 3.5: Add fashion-specific insights for retail business data
+      const fashionInsights = fashionInsightsGenerator.generateInsights(consolidatedData);
+      insights.push(...fashionInsights);
+      logger.info(`Total insights (including fashion-specific): ${insights.length}`);
 
       // Step 4: Generate action plan
       const actionPlan = await actionPlanGenerator.generateActionPlan(
