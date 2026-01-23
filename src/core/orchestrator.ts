@@ -24,6 +24,7 @@ import { timelineGenerator } from '../generators/timeline-generator';
 import { mbbReportGenerator } from '../generators/mbb-report-generator';
 import { logger, startTimer } from '../utils/logger';
 import { fashionInsightsGenerator } from '../analyzers/fashion-insights';
+import { fashionBusinessParser, DateInfo } from '../extractors/fashion-business-parser';
 import { generateId } from '../utils/helpers';
 
 /**
@@ -99,8 +100,24 @@ export class OpptraBI {
         confidenceThreshold: options.confidenceThreshold || 0.6,
       });
 
-      // Step 3.5: Add fashion-specific insights for retail business data
-      const fashionInsights = fashionInsightsGenerator.generateInsights(consolidatedData);
+      // Step 3.5: Extract DateInfo and add fashion-specific insights
+      // Get DateInfo from first PDF source
+      let dateInfo: DateInfo | undefined;
+      const pdfSource = sources.find(s => s.type === DataSourceType.PDF);
+      if (pdfSource && rawDataList.length > 0) {
+        const pdfData = rawDataList[0];
+        const filename = path.basename(pdfSource.location);
+        const text = pdfData.data.text || '';
+        dateInfo = fashionBusinessParser.extractDateInfo(filename, text);
+
+        // Store in consolidated data metadata
+        if (!consolidatedData.metadata) {
+          consolidatedData.metadata = {};
+        }
+        consolidatedData.metadata.dateInfo = dateInfo;
+      }
+
+      const fashionInsights = fashionInsightsGenerator.generateInsights(consolidatedData, dateInfo);
       insights.push(...fashionInsights);
       logger.info(`Total insights (including fashion-specific): ${insights.length}`);
 

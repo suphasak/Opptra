@@ -1,23 +1,23 @@
 {
   "dataPoints": [
     {
-      "id": "1769136025267-c99d3324864e3a7f",
-      "timestamp": "2026-01-23T02:40:25.262Z",
+      "id": "1769155111316-46281b3d6d1f7105",
+      "timestamp": "2026-01-23T07:58:31.311Z",
       "category": "financial",
       "metric": "Last Day Revenue",
       "value": 11992,
-      "source": "1769136024626-75d95e29c5f78565",
+      "source": "1769155110574-ede85188b94ac3e4",
       "metadata": {
         "sourceType": "pdf"
       }
     },
     {
-      "id": "1769136025267-9f4837f315f04b0d",
-      "timestamp": "2026-01-23T02:40:25.262Z",
+      "id": "1769155111316-4484cb8548058f28",
+      "timestamp": "2026-01-23T07:58:31.311Z",
       "category": "financial",
       "metric": "MTD Revenue",
       "value": 270790,
-      "source": "1769136024626-75d95e29c5f78565",
+      "source": "1769155110574-ede85188b94ac3e4",
       "metadata": {
         "sourceType": "pdf",
         "target": 606087,
@@ -26,12 +26,12 @@
       }
     },
     {
-      "id": "1769136025267-8bd5b3812dd378d9",
-      "timestamp": "2026-01-23T02:40:25.262Z",
+      "id": "1769155111316-61f116c28e12462e",
+      "timestamp": "2026-01-23T07:58:31.311Z",
       "category": "brand-performance",
       "metric": "USPA - KSA - MTD Revenue",
       "value": 145514,
-      "source": "1769136024626-75d95e29c5f78565",
+      "source": "1769155110574-ede85188b94ac3e4",
       "metadata": {
         "sourceType": "pdf",
         "brand": "USPA",
@@ -42,12 +42,12 @@
       }
     },
     {
-      "id": "1769136025267-a5ecc02b4273872a",
-      "timestamp": "2026-01-23T02:40:25.262Z",
+      "id": "1769155111316-4ac09cf6c1b13426",
+      "timestamp": "2026-01-23T07:58:31.311Z",
       "category": "brand-performance",
       "metric": "Penti - KSA - MTD Revenue",
       "value": 2079,
-      "source": "1769136024626-75d95e29c5f78565",
+      "source": "1769155110574-ede85188b94ac3e4",
       "metadata": {
         "sourceType": "pdf",
         "brand": "Penti",
@@ -58,12 +58,12 @@
       }
     },
     {
-      "id": "1769136025267-2df4bb5b55c403ff",
-      "timestamp": "2026-01-23T02:40:25.262Z",
+      "id": "1769155111316-7d00d08942045fe2",
+      "timestamp": "2026-01-23T07:58:31.311Z",
       "category": "brand-performance",
       "metric": "French Connection - KSA - MTD Revenue",
       "value": 4547,
-      "source": "1769136024626-75d95e29c5f78565",
+      "source": "1769155110574-ede85188b94ac3e4",
       "metadata": {
         "sourceType": "pdf",
         "brand": "French Connection",
@@ -74,12 +74,12 @@
       }
     },
     {
-      "id": "1769136025267-9a97bf1bbc4b6107",
-      "timestamp": "2026-01-23T02:40:25.262Z",
+      "id": "1769155111316-c778d0c70af6c5c4",
+      "timestamp": "2026-01-23T07:58:31.311Z",
       "category": "brand-performance",
       "metric": "CAMPUS - KSA - MTD Revenue",
       "value": 11156,
-      "source": "1769136024626-75d95e29c5f78565",
+      "source": "1769155110574-ede85188b94ac3e4",
       "metadata": {
         "sourceType": "pdf",
         "brand": "CAMPUS",
@@ -90,12 +90,12 @@
       }
     },
     {
-      "id": "1769136025267-f9112ba59e80dc86",
-      "timestamp": "2026-01-23T02:40:25.262Z",
+      "id": "1769155111316-f9e4a40b233ec714",
+      "timestamp": "2026-01-23T07:58:31.311Z",
       "category": "brand-performance",
       "metric": "USPA - UAE - MTD Revenue",
       "value": 88274,
-      "source": "1769136024626-75d95e29c5f78565",
+      "source": "1769155110574-ede85188b94ac3e4",
       "metadata": {
         "sourceType": "pdf",
         "brand": "USPA",
@@ -106,12 +106,12 @@
       }
     },
     {
-      "id": "1769136025267-a31b3f872bbdaf18",
-      "timestamp": "2026-01-23T02:40:25.262Z",
+      "id": "1769155111316-4d670d32fd93b19f",
+      "timestamp": "2026-01-23T07:58:31.311Z",
       "category": "brand-performance",
       "metric": "Penti - UAE - MTD Revenue",
       "value": 5744,
-      "source": "1769136024626-75d95e29c5f78565",
+      "source": "1769155110574-ede85188b94ac3e4",
       "metadata": {
         "sourceType": "pdf",
         "brand": "Penti",
@@ -122,12 +122,12 @@
       }
     },
     {
-      "id": "1769136025267-3d5bb26a4be595a9",
-      "timestamp": "2026-01-23T02:40:25.262Z",
+      "id": "1769155111316-9cdab521b4635b0d",
+      "timestamp": "2026-01-23T07:58:31.311Z",
       "category": "brand-performance",
       "metric": "French Connection - UAE - MTD Revenue",
       "value": 9123,
-      "source": "1769136024626-75d95e29c5f78565",
+      "source": "1769155110574-ede85188b94ac3e4",
       "metadata": {
         "sourceType": "pdf",
         "brand": "French Connection",
@@ -138,12 +138,12 @@
       }
     },
     {
-      "id": "1769136025267-ffab710b20ebbc56",
-      "timestamp": "2026-01-23T02:40:25.262Z",
+      "id": "1769155111316-ca2b0e8ca8060352",
+      "timestamp": "2026-01-23T07:58:31.311Z",
       "category": "brand-performance",
       "metric": "CAMPUS - UAE - MTD Revenue",
       "value": 4352,
-      "source": "1769136024626-75d95e29c5f78565",
+      "source": "1769155110574-ede85188b94ac3e4",
       "metadata": {
         "sourceType": "pdf",
         "brand": "CAMPUS",
@@ -154,300 +154,300 @@
       }
     },
     {
-      "id": "1769136025268-7495a5e0f0882e21",
-      "timestamp": "2026-01-23T02:40:25.262Z",
+      "id": "1769155111316-68d0e22e30367a23",
+      "timestamp": "2026-01-23T07:58:31.311Z",
       "category": "channel-performance",
       "metric": "Namshi - MTD Revenue",
       "value": 130439,
-      "source": "1769136024626-75d95e29c5f78565",
+      "source": "1769155110574-ede85188b94ac3e4",
       "metadata": {
         "sourceType": "pdf",
         "channel": "Namshi"
       }
     },
     {
-      "id": "1769136025268-c3dbaccae41cb5f3",
-      "timestamp": "2026-01-23T02:40:25.262Z",
+      "id": "1769155111316-27755187f1865541",
+      "timestamp": "2026-01-23T07:58:31.311Z",
       "category": "channel-performance",
       "metric": "Noon - MTD Revenue",
       "value": 91427,
-      "source": "1769136024626-75d95e29c5f78565",
+      "source": "1769155110574-ede85188b94ac3e4",
       "metadata": {
         "sourceType": "pdf",
         "channel": "Noon"
       }
     },
     {
-      "id": "1769136025268-23ae0d6700a0b773",
-      "timestamp": "2026-01-23T02:40:25.262Z",
+      "id": "1769155111316-e393a6d805d45855",
+      "timestamp": "2026-01-23T07:58:31.311Z",
       "category": "channel-performance",
       "metric": "CP - MTD Revenue",
       "value": 5502,
-      "source": "1769136024626-75d95e29c5f78565",
+      "source": "1769155110574-ede85188b94ac3e4",
       "metadata": {
         "sourceType": "pdf",
         "channel": "CP"
       }
     },
     {
-      "id": "1769136025268-360d4764e0ae3169",
-      "timestamp": "2026-01-23T02:40:25.262Z",
+      "id": "1769155111316-623a434f1409db3c",
+      "timestamp": "2026-01-23T07:58:31.311Z",
       "category": "channel-performance",
       "metric": "Amazon_1P - MTD Revenue",
       "value": 4995,
-      "source": "1769136024626-75d95e29c5f78565",
+      "source": "1769155110574-ede85188b94ac3e4",
       "metadata": {
         "sourceType": "pdf",
         "channel": "Amazon_1P"
       }
     },
     {
-      "id": "1769136025268-d2f788a239e76c2e",
-      "timestamp": "2026-01-23T02:40:25.262Z",
+      "id": "1769155111316-653b809871630f9e",
+      "timestamp": "2026-01-23T07:58:31.311Z",
       "category": "channel-performance",
       "metric": "Trendyol - MTD Revenue",
       "value": 1424,
-      "source": "1769136024626-75d95e29c5f78565",
+      "source": "1769155110574-ede85188b94ac3e4",
       "metadata": {
         "sourceType": "pdf",
         "channel": "Trendyol"
       }
     },
     {
-      "id": "1769136025268-56c53e1dc2b1668b",
-      "timestamp": "2026-01-23T02:40:25.262Z",
+      "id": "1769155111316-366282a5028d1ed6",
+      "timestamp": "2026-01-23T07:58:31.311Z",
       "category": "profitability",
       "metric": "USPA - GM %",
       "value": 62.3,
-      "source": "1769136024626-75d95e29c5f78565",
+      "source": "1769155110574-ede85188b94ac3e4",
       "metadata": {
         "sourceType": "pdf",
         "brand": "USPA"
       }
     },
     {
-      "id": "1769136025268-1352b89476a3d7b3",
-      "timestamp": "2026-01-23T02:40:25.262Z",
+      "id": "1769155111316-dac3bfb6cdc810de",
+      "timestamp": "2026-01-23T07:58:31.311Z",
       "category": "profitability",
       "metric": "USPA - MKT %",
       "value": 6.6,
-      "source": "1769136024626-75d95e29c5f78565",
+      "source": "1769155110574-ede85188b94ac3e4",
       "metadata": {
         "sourceType": "pdf",
         "brand": "USPA"
       }
     },
     {
-      "id": "1769136025268-84375b349eb6a0e5",
-      "timestamp": "2026-01-23T02:40:25.262Z",
+      "id": "1769155111316-cbf58466d9b2babe",
+      "timestamp": "2026-01-23T07:58:31.311Z",
       "category": "profitability",
       "metric": "USPA - DC %",
       "value": 0,
-      "source": "1769136024626-75d95e29c5f78565",
+      "source": "1769155110574-ede85188b94ac3e4",
       "metadata": {
         "sourceType": "pdf",
         "brand": "USPA"
       }
     },
     {
-      "id": "1769136025268-ab36ca43e09d3b46",
-      "timestamp": "2026-01-23T02:40:25.262Z",
+      "id": "1769155111317-5d4bce0d0f08cc3d",
+      "timestamp": "2026-01-23T07:58:31.311Z",
       "category": "profitability",
       "metric": "USPA - IOWC %",
       "value": 0,
-      "source": "1769136024626-75d95e29c5f78565",
+      "source": "1769155110574-ede85188b94ac3e4",
       "metadata": {
         "sourceType": "pdf",
         "brand": "USPA"
       }
     },
     {
-      "id": "1769136025268-478d8fa00a0d8aaf",
-      "timestamp": "2026-01-23T02:40:25.262Z",
+      "id": "1769155111317-c6e892b2183361ac",
+      "timestamp": "2026-01-23T07:58:31.311Z",
       "category": "profitability",
       "metric": "USPA - CM2 %",
       "value": 0,
-      "source": "1769136024626-75d95e29c5f78565",
+      "source": "1769155110574-ede85188b94ac3e4",
       "metadata": {
         "sourceType": "pdf",
         "brand": "USPA"
       }
     },
     {
-      "id": "1769136025268-2d206b608ea368a1",
-      "timestamp": "2026-01-23T02:40:25.262Z",
+      "id": "1769155111317-7f3610064c97be97",
+      "timestamp": "2026-01-23T07:58:31.311Z",
       "category": "profitability",
       "metric": "Penti - GM %",
       "value": 56.41,
-      "source": "1769136024626-75d95e29c5f78565",
+      "source": "1769155110574-ede85188b94ac3e4",
       "metadata": {
         "sourceType": "pdf",
         "brand": "Penti"
       }
     },
     {
-      "id": "1769136025268-d9e9f5cd319647f4",
-      "timestamp": "2026-01-23T02:40:25.262Z",
+      "id": "1769155111317-1af51b8f291b856a",
+      "timestamp": "2026-01-23T07:58:31.311Z",
       "category": "profitability",
       "metric": "Penti - MKT %",
       "value": 8.7,
-      "source": "1769136024626-75d95e29c5f78565",
+      "source": "1769155110574-ede85188b94ac3e4",
       "metadata": {
         "sourceType": "pdf",
         "brand": "Penti"
       }
     },
     {
-      "id": "1769136025268-0640f74652b69846",
-      "timestamp": "2026-01-23T02:40:25.262Z",
+      "id": "1769155111317-ad26d13df14aee09",
+      "timestamp": "2026-01-23T07:58:31.311Z",
       "category": "profitability",
       "metric": "Penti - DC %",
       "value": 0,
-      "source": "1769136024626-75d95e29c5f78565",
+      "source": "1769155110574-ede85188b94ac3e4",
       "metadata": {
         "sourceType": "pdf",
         "brand": "Penti"
       }
     },
     {
-      "id": "1769136025268-773146bdc0eb1083",
-      "timestamp": "2026-01-23T02:40:25.262Z",
+      "id": "1769155111317-e1824443d8203a64",
+      "timestamp": "2026-01-23T07:58:31.311Z",
       "category": "profitability",
       "metric": "Penti - IOWC %",
       "value": 0,
-      "source": "1769136024626-75d95e29c5f78565",
+      "source": "1769155110574-ede85188b94ac3e4",
       "metadata": {
         "sourceType": "pdf",
         "brand": "Penti"
       }
     },
     {
-      "id": "1769136025268-e393bcedd2a70f65",
-      "timestamp": "2026-01-23T02:40:25.262Z",
+      "id": "1769155111317-a48d0eaf673da72b",
+      "timestamp": "2026-01-23T07:58:31.311Z",
       "category": "profitability",
       "metric": "Penti - CM2 %",
       "value": 0,
-      "source": "1769136024626-75d95e29c5f78565",
+      "source": "1769155110574-ede85188b94ac3e4",
       "metadata": {
         "sourceType": "pdf",
         "brand": "Penti"
       }
     },
     {
-      "id": "1769136025268-d187558c12f0bef5",
-      "timestamp": "2026-01-23T02:40:25.262Z",
+      "id": "1769155111317-e6900959c147478f",
+      "timestamp": "2026-01-23T07:58:31.311Z",
       "category": "profitability",
       "metric": "French Connection - GM %",
       "value": 30.5,
-      "source": "1769136024626-75d95e29c5f78565",
+      "source": "1769155110574-ede85188b94ac3e4",
       "metadata": {
         "sourceType": "pdf",
         "brand": "French Connection"
       }
     },
     {
-      "id": "1769136025268-5cb0aab39721c227",
-      "timestamp": "2026-01-23T02:40:25.262Z",
+      "id": "1769155111317-6a547e9383728a31",
+      "timestamp": "2026-01-23T07:58:31.311Z",
       "category": "profitability",
       "metric": "French Connection - MKT %",
       "value": 5.7,
-      "source": "1769136024626-75d95e29c5f78565",
+      "source": "1769155110574-ede85188b94ac3e4",
       "metadata": {
         "sourceType": "pdf",
         "brand": "French Connection"
       }
     },
     {
-      "id": "1769136025268-1a4113a11214688f",
-      "timestamp": "2026-01-23T02:40:25.262Z",
+      "id": "1769155111317-cc31bcd8c390e2dd",
+      "timestamp": "2026-01-23T07:58:31.311Z",
       "category": "profitability",
       "metric": "French Connection - DC %",
       "value": 0,
-      "source": "1769136024626-75d95e29c5f78565",
+      "source": "1769155110574-ede85188b94ac3e4",
       "metadata": {
         "sourceType": "pdf",
         "brand": "French Connection"
       }
     },
     {
-      "id": "1769136025268-0698bebb1e38f6f5",
-      "timestamp": "2026-01-23T02:40:25.262Z",
+      "id": "1769155111317-60be21e106b833cf",
+      "timestamp": "2026-01-23T07:58:31.311Z",
       "category": "profitability",
       "metric": "French Connection - IOWC %",
       "value": 0,
-      "source": "1769136024626-75d95e29c5f78565",
+      "source": "1769155110574-ede85188b94ac3e4",
       "metadata": {
         "sourceType": "pdf",
         "brand": "French Connection"
       }
     },
     {
-      "id": "1769136025268-77ab75b7ed1a4af2",
-      "timestamp": "2026-01-23T02:40:25.262Z",
+      "id": "1769155111317-5ee01617930b5b8e",
+      "timestamp": "2026-01-23T07:58:31.311Z",
       "category": "profitability",
       "metric": "French Connection - CM2 %",
       "value": 0,
-      "source": "1769136024626-75d95e29c5f78565",
+      "source": "1769155110574-ede85188b94ac3e4",
       "metadata": {
         "sourceType": "pdf",
         "brand": "French Connection"
       }
     },
     {
-      "id": "1769136025268-2c23c7e354555ad9",
-      "timestamp": "2026-01-23T02:40:25.262Z",
+      "id": "1769155111317-12f068a0134a539b",
+      "timestamp": "2026-01-23T07:58:31.311Z",
       "category": "profitability",
       "metric": "CAMPUS - GM %",
       "value": 60.52,
-      "source": "1769136024626-75d95e29c5f78565",
+      "source": "1769155110574-ede85188b94ac3e4",
       "metadata": {
         "sourceType": "pdf",
         "brand": "CAMPUS"
       }
     },
     {
-      "id": "1769136025268-7de321e7ebe281c3",
-      "timestamp": "2026-01-23T02:40:25.262Z",
+      "id": "1769155111317-c260a96b6d9cd76d",
+      "timestamp": "2026-01-23T07:58:31.311Z",
       "category": "profitability",
       "metric": "CAMPUS - MKT %",
       "value": 1.8,
-      "source": "1769136024626-75d95e29c5f78565",
+      "source": "1769155110574-ede85188b94ac3e4",
       "metadata": {
         "sourceType": "pdf",
         "brand": "CAMPUS"
       }
     },
     {
-      "id": "1769136025268-94c409f039422743",
-      "timestamp": "2026-01-23T02:40:25.262Z",
+      "id": "1769155111317-5dedb75ec391a928",
+      "timestamp": "2026-01-23T07:58:31.311Z",
       "category": "profitability",
       "metric": "CAMPUS - DC %",
       "value": 0,
-      "source": "1769136024626-75d95e29c5f78565",
+      "source": "1769155110574-ede85188b94ac3e4",
       "metadata": {
         "sourceType": "pdf",
         "brand": "CAMPUS"
       }
     },
     {
-      "id": "1769136025268-00a726c84db7dff2",
-      "timestamp": "2026-01-23T02:40:25.262Z",
+      "id": "1769155111317-aac2a7c70285b8c8",
+      "timestamp": "2026-01-23T07:58:31.311Z",
       "category": "profitability",
       "metric": "CAMPUS - IOWC %",
       "value": 0,
-      "source": "1769136024626-75d95e29c5f78565",
+      "source": "1769155110574-ede85188b94ac3e4",
       "metadata": {
         "sourceType": "pdf",
         "brand": "CAMPUS"
       }
     },
     {
-      "id": "1769136025268-834f2a34e1cf1bb1",
-      "timestamp": "2026-01-23T02:40:25.262Z",
+      "id": "1769155111317-452a601a0151d40a",
+      "timestamp": "2026-01-23T07:58:31.311Z",
       "category": "profitability",
       "metric": "CAMPUS - CM2 %",
       "value": 0,
-      "source": "1769136024626-75d95e29c5f78565",
+      "source": "1769155110574-ede85188b94ac3e4",
       "metadata": {
         "sourceType": "pdf",
         "brand": "CAMPUS"
@@ -455,12 +455,12 @@
     }
   ],
   "sources": [
-    "1769136024626-75d95e29c5f78565"
+    "1769155110574-ede85188b94ac3e4"
   ],
-  "consolidatedAt": "2026-01-23T02:40:25.270Z",
+  "consolidatedAt": "2026-01-23T07:58:31.319Z",
   "timeRange": {
-    "start": "2026-01-23T02:40:25.262Z",
-    "end": "2026-01-23T02:40:25.262Z"
+    "start": "2026-01-23T07:58:31.311Z",
+    "end": "2026-01-23T07:58:31.311Z"
   },
   "categories": [
     "financial",
@@ -504,5 +504,16 @@
     "CAMPUS - DC %",
     "CAMPUS - IOWC %",
     "CAMPUS - CM2 %"
-  ]
+  ],
+  "metadata": {
+    "dateInfo": {
+      "reportDate": null,
+      "dataEndDate": null,
+      "mtdEndDate": null,
+      "mtdStartDate": null,
+      "daysInPeriod": null,
+      "daysRemaining": null,
+      "year": null
+    }
+  }
 }

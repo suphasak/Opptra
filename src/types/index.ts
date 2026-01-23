@@ -65,6 +65,7 @@ export interface ConsolidatedData {
   };
   categories: string[];
   metrics: string[];
+  metadata?: Record<string, any>;  // For storing additional context like DateInfo
 }
 
 /**

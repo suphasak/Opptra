@@ -18,8 +18,19 @@ export interface BusinessMetric {
   variancePercent?: number;
 }
 
+export interface DateInfo {
+  reportDate?: Date;        // Date when report was generated (from filename)
+  dataEndDate?: Date;        // Last day of data in report (D-2 from report date)
+  mtdStartDate?: Date;       // Start of MTD period
+  mtdEndDate?: Date;         // End of MTD period
+  daysInPeriod?: number;     // Number of days in MTD period
+  daysRemaining?: number;    // Days remaining in month
+  month?: string;            // Month name (e.g., "January")
+  year?: number;             // Year
+}
+
 export class FashionBusinessParser {
-  private brands = ['USPA', 'Penti', 'French Connection', 'CAMPUS', 'Nautica'];
+  private brands = ['USPA', 'Penti', 'French Connection', 'CAMPUS', 'Puma', 'Nautica'];
   private countries = ['KSA', 'UAE'];
   private channels = ['Namshi', 'Noon', 'CP', 'Amazon_1P', 'Trendyol'];
 
@@ -329,6 +340,122 @@ export class FashionBusinessParser {
     }
 
     return metrics;
+  }
+
+  /**
+   * Extract date information from PDF filename and content
+   * Implements D-2 logic: file dated 23rd contains data through 21st
+   */
+  extractDateInfo(filename: string, text: string): DateInfo {
+    const dateInfo: DateInfo = {};
+
+    // Extract from filename: "23rd-jan.pdf" or "jan-23.pdf" or "2026-01-23.pdf"
+    const filenamePatterns = [
+      /(\d{1,2})(?:st|nd|rd|th)?[-_\s]?(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/i,
+      /(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[-_\s]?(\d{1,2})/i,
+      /(\d{4})[-_](\d{1,2})[-_](\d{1,2})/,
+    ];
+
+    const monthMap: Record<string, number> = {
+      jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5,
+      jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11
+    };
+
+    for (const pattern of filenamePatterns) {
+      const match = filename.match(pattern);
+      if (match) {
+        let day: number, month: number, year: number = new Date().getFullYear();
+
+        if (match[0].includes('-') && match[0].match(/\d{4}/)) {
+          // Format: 2026-01-23
+          year = parseInt(match[1]);
+          month = parseInt(match[2]) - 1;
+          day = parseInt(match[3]);
+        } else if (match[2] && !isNaN(parseInt(match[2]))) {
+          // Format: 23rd-jan
+          day = parseInt(match[1]);
+          month = monthMap[match[2].toLowerCase()];
+        } else {
+          // Format: jan-23
+          month = monthMap[match[1].toLowerCase()];
+          day = parseInt(match[2]);
+        }
+
+        dateInfo.reportDate = new Date(year, month, day);
+
+        // Apply D-2 logic: data is through 2 days before report date
+        dateInfo.dataEndDate = new Date(year, month, day - 2);
+
+        break;
+      }
+    }
+
+    // Try to extract MTD period from PDF content
+    // Look for patterns like "Jan 1 - Jan 21" or "MTD (as of Jan 21)" or "January 1-21"
+    const mtdPatterns = [
+      /(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+(\d{1,2})\s*-\s*(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+(\d{1,2})/i,
+      /MTD.*?(?:as of|through).*?(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+(\d{1,2})/i,
+      /(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{1,2})\s*-\s*(\d{1,2})/i,
+    ];
+
+    const currentYear = new Date().getFullYear();
+
+    for (const pattern of mtdPatterns) {
+      const match = text.match(pattern);
+      if (match) {
+        if (match[4]) {
+          // Format: "Jan 1 - Jan 21"
+          const startMonth = monthMap[match[1].substring(0, 3).toLowerCase()];
+          const startDay = parseInt(match[2]);
+          const endMonth = monthMap[match[3].substring(0, 3).toLowerCase()];
+          const endDay = parseInt(match[4]);
+
+          dateInfo.mtdStartDate = new Date(currentYear, startMonth, startDay);
+          dateInfo.mtdEndDate = new Date(currentYear, endMonth, endDay);
+        } else if (match[2]) {
+          // Format: "MTD as of Jan 21"
+          const endMonth = monthMap[match[1].substring(0, 3).toLowerCase()];
+          const endDay = parseInt(match[2]);
+
+          dateInfo.mtdEndDate = new Date(currentYear, endMonth, endDay);
+          dateInfo.mtdStartDate = new Date(currentYear, endMonth, 1); // Assume month start
+        } else if (match[3]) {
+          // Format: "January 1-21"
+          const monthName = match[1].substring(0, 3).toLowerCase();
+          const month = monthMap[monthName];
+          const startDay = parseInt(match[2]);
+          const endDay = parseInt(match[3]);
+
+          dateInfo.mtdStartDate = new Date(currentYear, month, startDay);
+          dateInfo.mtdEndDate = new Date(currentYear, month, endDay);
+        }
+        break;
+      }
+    }
+
+    // If we have dataEndDate from filename, use it as mtdEndDate if not found in content
+    if (dateInfo.dataEndDate && !dateInfo.mtdEndDate) {
+      dateInfo.mtdEndDate = dateInfo.dataEndDate;
+      dateInfo.mtdStartDate = new Date(dateInfo.dataEndDate.getFullYear(), dateInfo.dataEndDate.getMonth(), 1);
+    }
+
+    // Calculate derived fields
+    if (dateInfo.mtdStartDate && dateInfo.mtdEndDate) {
+      const daysDiff = Math.floor((dateInfo.mtdEndDate.getTime() - dateInfo.mtdStartDate.getTime()) / (1000 * 60 * 60 * 24));
+      dateInfo.daysInPeriod = daysDiff + 1; // Include both start and end day
+
+      // Calculate days remaining in month
+      const lastDayOfMonth = new Date(dateInfo.mtdEndDate.getFullYear(), dateInfo.mtdEndDate.getMonth() + 1, 0).getDate();
+      dateInfo.daysRemaining = lastDayOfMonth - dateInfo.mtdEndDate.getDate();
+
+      // Extract month and year
+      const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                          'July', 'August', 'September', 'October', 'November', 'December'];
+      dateInfo.month = monthNames[dateInfo.mtdEndDate.getMonth()];
+      dateInfo.year = dateInfo.mtdEndDate.getFullYear();
+    }
+
+    return dateInfo;
   }
 
   /**

@@ -1,16 +1,21 @@
 /**
  * Fashion Business Insights Generator
  * Specialized for fashion retail performance analysis
+ * Enhanced with root cause analysis and prioritization
  */
 
 import { ConsolidatedData, Insight, Priority, InsightType } from '../types';
 import { generateId } from '../utils/helpers';
+import { rootCauseAnalyzer } from './root-cause-analyzer';
+import { prioritizationEngine, PrioritizedRecommendation } from './prioritization';
+import { DateInfo } from '../extractors/fashion-business-parser';
 
 export class FashionInsightsGenerator {
   /**
    * Generate actionable insights from fashion retail data
+   * Enhanced with dynamic dates, root cause analysis, and prioritization
    */
-  generateInsights(data: ConsolidatedData): Insight[] {
+  generateInsights(data: ConsolidatedData, dateInfo?: DateInfo): Insight[] {
     const insights: Insight[] = [];
 
     // Extract data points by category
@@ -19,21 +24,31 @@ export class FashionInsightsGenerator {
     const profitability = data.dataPoints.filter(d => d.category === 'profitability');
     const financial = data.dataPoints.filter(d => d.category === 'financial');
 
-    // 1. Overall MTD Performance (Jan 1-17)
+    // 1. Overall MTD Performance (Dynamic dates)
     const mtdRevenue = financial.find(d => d.metric === 'MTD Revenue');
     if (mtdRevenue && mtdRevenue.metadata?.target) {
       const target = mtdRevenue.metadata.target as number;
       const variance = mtdRevenue.metadata.variance as number;
       const variancePercent = mtdRevenue.metadata.variancePercent as number;
-      const daysRemaining = 31 - 17; // Days left in January
+
+      // Use dynamic dates from dateInfo if available, otherwise fall back to defaults
+      const daysInPeriod = dateInfo?.daysInPeriod || 17;
+      const daysRemaining = dateInfo?.daysRemaining || 14;
+      const month = dateInfo?.month || 'January';
+      const mtdStartDate = dateInfo?.mtdStartDate || new Date(2026, 0, 1);
+      const mtdEndDate = dateInfo?.mtdEndDate || new Date(2026, 0, 17);
+
       const dailyGapToClose = Math.abs(variance) / daysRemaining;
+
+      const startDay = mtdStartDate.getDate();
+      const endDay = mtdEndDate.getDate();
 
       insights.push({
         id: generateId(),
         type: 'performance' as InsightType,
         category: 'financial',
-        title: `Jan MTD Revenue: $${Math.abs(variance).toLocaleString()} Gap to Close`,
-        description: `Current Jan 1-17 MTD: $${mtdRevenue.value.toLocaleString()} vs Month Target: $${target.toLocaleString()}. Gap: $${Math.abs(variance).toLocaleString()} (${Math.abs(variancePercent).toFixed(1)}%). Need to generate $${Math.round(dailyGapToClose).toLocaleString()}/day for remaining ${daysRemaining} days to meet target.`,
+        title: `${month} MTD Revenue: $${Math.abs(variance).toLocaleString()} Gap to Close`,
+        description: `Current ${month} ${startDay}-${endDay} MTD: $${mtdRevenue.value.toLocaleString()} vs Month Target: $${target.toLocaleString()}. Gap: $${Math.abs(variance).toLocaleString()} (${Math.abs(variancePercent).toFixed(1)}%). Need to generate $${Math.round(dailyGapToClose).toLocaleString()}/day for remaining ${daysRemaining} days to meet target.`,
         metrics: ['MTD Revenue'],
         priority: Math.abs(variancePercent) > 5 ? 'critical' as Priority : 'high' as Priority,
         confidence: 1.0,
@@ -54,65 +69,70 @@ export class FashionInsightsGenerator {
       });
     }
 
-    // 2. Prioritize brands by revenue contribution (not just variance %)
+    // 2. Enhanced brand performance with root cause analysis
     if (brandPerf.length > 0) {
-      // Calculate total revenue and revenue contribution per brand
-      const brandContributions = brandPerf.map(bp => ({
-        brand: bp.metadata?.brand as string,
-        country: bp.metadata?.country as string,
-        revenue: bp.value as number,
-        target: (bp.metadata?.target as number) || 0,
-        variance: (bp.metadata?.variance as number) || 0,
-        variancePercent: (bp.metadata?.variancePercent as number) || 0,
-      }));
+      // Use root cause analyzer for all underperforming brand-markets
+      const brandMarketAnalyses = rootCauseAnalyzer.analyzeAllBrandMarkets(data);
 
-      const totalRevenue = brandContributions.reduce((sum, b) => sum + b.revenue, 0);
+      // Calculate total revenue for contribution %
+      const totalRevenue = brandPerf.reduce((sum, b) => sum + (b.value as number), 0);
 
-      // Add revenue contribution % and impact score
-      const brandsWithImpact = brandContributions.map(b => ({
-        ...b,
-        revenueContribution: (b.revenue / totalRevenue) * 100,
-        impactScore: Math.abs(b.variance) * (b.revenue / totalRevenue), // Weighted by contribution
-      })).sort((a, b) => b.impactScore - a.impactScore); // Sort by impact, not just variance
+      // Top 3 brands by gap size (already sorted in analyzer)
+      const topImpactBrands = brandMarketAnalyses.slice(0, 3);
 
-      // Top 3 brands by impact (considering both gap size and revenue contribution)
-      const topImpactBrands = brandsWithImpact.slice(0, 3).filter(b => b.variance < 0);
-
-      topImpactBrands.forEach((brand, index) => {
+      topImpactBrands.forEach((analysis, index) => {
         const priority = index === 0 ? 'critical' as Priority : 'high' as Priority;
+
+        const revenue = brandPerf.find(
+          bp => bp.metadata?.brand === analysis.brand && bp.metadata?.country === analysis.market
+        )?.value as number || 0;
+
+        const revenueContribution = (revenue / totalRevenue) * 100;
+
+        // Build description with root causes
+        let description = `${analysis.brand} in ${analysis.market}: $${revenue.toLocaleString()} MTD (${revenueContribution.toFixed(1)}% of total). Gap: $${Math.abs(analysis.gap).toLocaleString()} (${Math.abs(analysis.gapPercent).toFixed(1)}%).\n\n`;
+
+        // Add root causes with evidence
+        if (analysis.rootCauses.length > 0) {
+          description += `**Root Causes (Data-Backed):**\n`;
+          analysis.rootCauses.forEach((rc, rcIndex) => {
+            description += `${rcIndex + 1}. **${rc.factor}** [Impact: $${rc.impact.toLocaleString()}]\n`;
+            rc.evidence.forEach(ev => {
+              description += `   • ${ev}\n`;
+            });
+            description += `   → ${rc.recommendation}\n\n`;
+          });
+        } else {
+          // Fall back to generic recommendations if no root causes identified
+          description += `**Recommended Actions:**\n`;
+          description += `1. **Inventory**: Check stock availability for top 20 SKUs\n`;
+          description += `2. **Marketing**: Review campaign performance, ensure ROAS >3\n`;
+          description += `3. **Pricing**: Compare vs competitors, adjust if needed\n`;
+        }
 
         insights.push({
           id: generateId(),
           type: 'recommendation' as InsightType,
           category: 'brand-performance',
-          title: `Priority ${index + 1}: ${brand.brand} ${brand.country} - $${Math.abs(brand.variance).toLocaleString()} Gap`,
-          description: `${brand.brand} in ${brand.country}: $${brand.revenue.toLocaleString()} MTD (${brand.revenueContribution.toFixed(1)}% of total) vs $${brand.target.toLocaleString()} target. Gap: $${Math.abs(brand.variance).toLocaleString()} (${Math.abs(brand.variancePercent).toFixed(1)}%).
-
-**Recommended Actions:**
-1. **Inventory**: Check stock availability for top 20 SKUs, ensure no stockouts on bestsellers
-2. **Marketing**: Increase ad spend by 20-30% on Namshi & Noon (top channels), focus on ROAS >3
-3. **Pricing**: Review competitor pricing, consider flash sales on slow-moving SKUs
-4. **Operations**: Reduce returns - analyze top return reasons, improve product descriptions
-5. **SKU Performance**: Push top 20 performing SKUs, discount bottom 20% by 15-20%
-6. **Channel**: Prioritize Namshi (56% of revenue) - ensure featured placements
-7. **Assortment**: Add trending styles based on competitor analysis
-8. **Catalog**: Update images and descriptions for underperforming products`,
-          metrics: [`${brand.brand} - ${brand.country} - MTD Revenue`],
+          title: `Priority ${index + 1}: ${analysis.brand} ${analysis.market} - $${Math.abs(analysis.gap).toLocaleString()} Gap`,
+          description,
+          metrics: [`${analysis.brand} - ${analysis.market} - MTD Revenue`],
           priority,
           confidence: 0.95,
           data: {
-            current: brand.revenue,
-            previous: brand.target,
-            change: brand.variance,
-            changePercent: brand.variancePercent,
+            current: revenue,
+            previous: revenue + Math.abs(analysis.gap),
+            change: analysis.gap,
+            changePercent: analysis.gapPercent,
           },
           generatedAt: new Date(),
           metadata: {
-            brand: brand.brand,
-            country: brand.country,
-            revenueContribution: brand.revenueContribution,
-            impactScore: brand.impactScore,
-            gapToClose: Math.abs(brand.variance),
+            brand: analysis.brand,
+            country: analysis.market,
+            revenueContribution,
+            gapToClose: Math.abs(analysis.gap),
+            rootCauses: analysis.rootCauses,
+            totalExplainedImpact: analysis.totalExplainedImpact,
           },
         });
       });
