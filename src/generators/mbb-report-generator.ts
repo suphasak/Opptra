@@ -1,3 +1,29 @@
+/**
+ * MBB-Style Report Generator
+ * Generates reports using McKinsey/BCG/Bain consulting frameworks
+ * Implements SCQA (Situation-Complication-Question-Answer) structure
+ */
+
+import { ConsolidatedData, Insight, ActionPlan } from '../types';
+
+export class MBBReportGenerator {
+  /**
+   * Generate SCQA-structured executive report
+   */
+  generateSCQAReport(
+    insights: Insight[],
+    actionPlan: ActionPlan,
+    data: ConsolidatedData
+  ): string {
+    const criticalInsights = insights.filter(i => i.priority === 'critical');
+    const highInsights = insights.filter(i => i.priority === 'high');
+
+    // Extract key metrics
+    const financialMetrics = data.dataPoints.filter(d => d.category === 'financial');
+    const mtdRevenue = financialMetrics.find(m => m.metric === 'MTD Revenue');
+    const lastDayRevenue = financialMetrics.find(m => m.metric === 'Last Day Revenue');
+
+    return `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -277,24 +303,28 @@
             <h1>Executive Business Review</h1>
             <div class="report-meta">
                 January MTD Performance Analysis (Jan 1-17, 2026)<br>
-                Report Generated: January 23, 2026
+                Report Generated: ${new Date().toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })}
             </div>
         </div>
 
         <!-- Key Metrics Dashboard -->
         <div class="metrics-grid">
             <div class="metric-card">
-                <div class="metric-value">$270,790</div>
+                <div class="metric-value">${mtdRevenue ? '$' + Math.round(mtdRevenue.value as number).toLocaleString() : 'N/A'}</div>
                 <div class="metric-label">MTD Revenue</div>
                 <div class="metric-sublabel">Jan 1-17 (17 days)</div>
             </div>
             <div class="metric-card">
-                <div class="metric-value negative">$100,864</div>
+                <div class="metric-value negative">${mtdRevenue?.metadata?.variance ? '$' + Math.abs(mtdRevenue.metadata.variance as number).toLocaleString() : 'N/A'}</div>
                 <div class="metric-label">Gap to Target</div>
-                <div class="metric-sublabel">16.6% below</div>
+                <div class="metric-sublabel">${mtdRevenue?.metadata?.variancePercent ? Math.abs(mtdRevenue.metadata.variancePercent as number).toFixed(1) + '% below' : ''}</div>
             </div>
             <div class="metric-card">
-                <div class="metric-value">$11,992</div>
+                <div class="metric-value">${lastDayRevenue ? '$' + Math.round(lastDayRevenue.value as number).toLocaleString() : 'N/A'}</div>
                 <div class="metric-label">Last Day</div>
                 <div class="metric-sublabel">Daily performance</div>
             </div>
@@ -303,18 +333,18 @@
         <!-- SITUATION -->
         <div class="scqa-section">
             <div class="scqa-label">SITUATION</div>
-            <div class="scqa-title">OPPTRA is tracking 17% behind January revenue targets mid-month</div>
+            <div class="scqa-title">OPPTRA is tracking ${Math.round((mtdRevenue?.metadata?.variancePercent as number || 0) * -1)}% behind January revenue targets mid-month</div>
             <div class="scqa-content">
-                <p>As of January 17th, OPPTRA Fashion Group has generated <strong>$270,790</strong> in revenue across its portfolio of fashion brands (USPA, CAMPUS, Penti, French Connection) operating in KSA and UAE markets.</p>
+                <p>As of January 17th, OPPTRA Fashion Group has generated <strong>$${mtdRevenue ? Math.round(mtdRevenue.value as number).toLocaleString() : 'N/A'}</strong> in revenue across its portfolio of fashion brands (USPA, CAMPUS, Penti, French Connection) operating in KSA and UAE markets.</p>
 
-                <p style="margin-top: 15px;">The company operates through multiple digital channels including Namshi (56% of revenue), Noon (39%), and emerging channels. With <strong>14 days remaining</strong> in January, the business faces a <strong>$100,864</strong> revenue gap to achieve the monthly target of <strong>$606,087</strong>.</p>
+                <p style="margin-top: 15px;">The company operates through multiple digital channels including Namshi (56% of revenue), Noon (39%), and emerging channels. With <strong>14 days remaining</strong> in January, the business faces a <strong>$${mtdRevenue?.metadata?.variance ? Math.abs(mtdRevenue.metadata.variance as number).toLocaleString() : 'N/A'}</strong> revenue gap to achieve the monthly target of <strong>$${mtdRevenue?.metadata?.target ? (mtdRevenue.metadata.target as number).toLocaleString() : 'N/A'}</strong>.</p>
 
                 <p style="margin-top: 15px;"><strong>Portfolio Composition:</strong></p>
                 <ul style="margin-top: 10px; margin-left: 20px;">
                     <li>4 fashion brands across footwear, apparel, and innerwear categories</li>
                     <li>2 key markets: KSA (primary) and UAE</li>
                     <li>5+ digital sales channels with varying performance levels</li>
-                    <li>Average gross margin: 52.4%</li>
+                    <li>Average gross margin: ${this.calculateAvgGM(data)}%</li>
                 </ul>
             </div>
         </div>
@@ -322,42 +352,18 @@
         <!-- COMPLICATION -->
         <div class="scqa-section">
             <div class="scqa-label">COMPLICATION</div>
-            <div class="scqa-title">Performance gaps concentrated in key revenue drivers requiring $7,205/day acceleration</div>
+            <div class="scqa-title">Performance gaps concentrated in key revenue drivers requiring $${mtdRevenue?.metadata?.variance ? Math.round(Math.abs(mtdRevenue.metadata.variance as number) / 14).toLocaleString() : 'N/A'}/day acceleration</div>
             <div class="scqa-content">
                 <p>The revenue shortfall is not uniformly distributed. Analysis reveals <strong>three critical issues</strong> driving underperformance:</p>
 
                 <div style="margin-top: 25px;">
-                    
-                        <div class="insight-block critical">
-                            <div class="insight-priority critical">CRITICAL PRIORITY</div>
-                            <div class="insight-title">1. Jan MTD Revenue: $100,864 Gap to Close</div>
-                            <div class="insight-description">Current Jan 1-17 MTD: $270,790 vs Month Target: $606,087. Gap: $100,864 (16.6%). Need to generate $7,205/day for remaining 14 days to meet target.</div>
+                    ${criticalInsights.concat(highInsights).slice(0, 5).map((insight, idx) => `
+                        <div class="insight-block ${insight.priority}">
+                            <div class="insight-priority ${insight.priority}">${insight.priority.toUpperCase()} PRIORITY</div>
+                            <div class="insight-title">${idx + 1}. ${insight.title}</div>
+                            <div class="insight-description">${this.formatInsightDescription(insight.description)}</div>
                         </div>
-                    
-                        <div class="insight-block critical">
-                            <div class="insight-priority critical">CRITICAL PRIORITY</div>
-                            <div class="insight-title">2. Priority 1: USPA UAE - $9,035 Gap</div>
-                            <div class="insight-description">USPA in UAE: $88,274 MTD (32.6% of total) vs $180,510 target. Gap: $9,035 (5.0%).</div>
-                        </div>
-                    
-                        <div class="insight-block high">
-                            <div class="insight-priority high">HIGH PRIORITY</div>
-                            <div class="insight-title">3. Priority 2: USPA KSA - $4,800 Gap</div>
-                            <div class="insight-description">USPA in KSA: $145,514 MTD (53.7% of total) vs $270,764 target. Gap: $4,800 (1.8%).</div>
-                        </div>
-                    
-                        <div class="insight-block high">
-                            <div class="insight-priority high">HIGH PRIORITY</div>
-                            <div class="insight-title">4. Priority 3: CAMPUS KSA - $21,656 Gap</div>
-                            <div class="insight-description">CAMPUS in KSA: $11,156 MTD (4.1% of total) vs $42,000 target. Gap: $21,656 (51.6%).</div>
-                        </div>
-                    
-                        <div class="insight-block high">
-                            <div class="insight-priority high">HIGH PRIORITY</div>
-                            <div class="insight-title">5. French Connection: Low GM 30.5% vs Avg 52.4%</div>
-                            <div class="insight-description">French Connection Gross Margin is 30.5%, which is 21.9 points below portfolio average of 52.4%.</div>
-                        </div>
-                    
+                    `).join('')}
                 </div>
 
                 <p style="margin-top: 25px;"><strong>Root Causes Identified:</strong></p>
@@ -377,7 +383,7 @@
             <div class="scqa-content">
                 <p>The business requires a dual-horizon strategy:</p>
                 <ul style="margin-top: 15px; margin-left: 20px;">
-                    <li><strong>Short-term (next 14 days):</strong> Close the $100,864 gap through tactical interventions</li>
+                    <li><strong>Short-term (next 14 days):</strong> Close the $${mtdRevenue?.metadata?.variance ? Math.abs(mtdRevenue.metadata.variance as number).toLocaleString() : 'N/A'} gap through tactical interventions</li>
                     <li><strong>Medium-term (Q1 2026):</strong> Address structural profitability and channel optimization issues</li>
                 </ul>
 
@@ -391,74 +397,12 @@
             <div class="scqa-title">Recommended 3-Pillar Action Plan</div>
             <div class="scqa-content">
                 <div class="recommendations">
-                    
-      <div class="recommendation-item">
-        <span class="recommendation-number">1</span>
-        <span class="recommendation-title">Revenue Acceleration - Brand Focus</span>
-        <div class="recommendation-description">Concentrate sales efforts on top 3 underperforming brand-market combinations identified in critical insights. Implement daily tracking, increase ad spend 20-30% on Namshi/Noon, and ensure no stockouts on top 20 SKUs. Expected impact: 60-70% of gap closure.</div>
-      </div>
-    
-      <div class="recommendation-item">
-        <span class="recommendation-number">2</span>
-        <span class="recommendation-title">Marketing Efficiency Optimization</span>
-        <div class="recommendation-description">Reduce marketing spend for brands exceeding industry benchmarks (>7% for innerwear, >5.5% for footwear) by pausing low-ROAS campaigns (<2.0). Reallocate budget to retargeting and high-performing channels. Expected impact: 2-3% margin improvement.</div>
-      </div>
-    
-      <div class="recommendation-item">
-        <span class="recommendation-number">3</span>
-        <span class="recommendation-title">Channel Diversification</span>
-        <div class="recommendation-description">Address underperforming channels (<10% revenue share) by ensuring catalog completeness, reviewing competitive pricing, and increasing promotional activity. Reduce single-channel dependency risk while capturing incremental revenue.</div>
-      </div>
-    
-      <div class="recommendation-item">
-        <span class="recommendation-number">4</span>
-        <span class="recommendation-title">Profitability Enhancement</span>
-        <div class="recommendation-description">For brands with GM 15+ points below portfolio average, conduct immediate root cause analysis on pricing, COGS, discounting, and returns. Target 5-point GM improvement within 60 days through supplier negotiations and promotional discipline.</div>
-      </div>
-    
-      <div class="recommendation-item">
-        <span class="recommendation-number">5</span>
-        <span class="recommendation-title">SKU Performance Management</span>
-        <div class="recommendation-description">Analyze top 20 and bottom 20 SKUs by brand. Push bestsellers aggressively through featured placements and ads. Discount slow-movers 15-20% to clear inventory and improve cash flow. Update product content for underperformers.</div>
-      </div>
-    
+                    ${this.generateRecommendations(insights, data)}
                 </div>
 
                 <div class="impact-chart">
                     <div class="chart-title">Expected Impact by Initiative</div>
-                    
-      <div class="chart-bar">
-        <div class="bar-label">
-          <span>Brand Focus (Top 3)</span>
-          <span class="bar-value">$65,562 (65%)</span>
-        </div>
-        <div class="bar-fill" style="width: 65%"></div>
-      </div>
-    
-      <div class="chart-bar">
-        <div class="bar-label">
-          <span>Marketing Optimization</span>
-          <span class="bar-value">$15,130 (15%)</span>
-        </div>
-        <div class="bar-fill" style="width: 15%"></div>
-      </div>
-    
-      <div class="chart-bar">
-        <div class="bar-label">
-          <span>Channel Diversification</span>
-          <span class="bar-value">$12,104 (12%)</span>
-        </div>
-        <div class="bar-fill" style="width: 12%"></div>
-      </div>
-    
-      <div class="chart-bar">
-        <div class="bar-label">
-          <span>SKU Management</span>
-          <span class="bar-value">$8,069 (8%)</span>
-        </div>
-        <div class="bar-fill" style="width: 8%"></div>
-      </div>
-    
+                    ${this.generateImpactChart(insights, mtdRevenue?.metadata?.variance as number || 0)}
                 </div>
             </div>
         </div>
@@ -468,13 +412,13 @@
             <div class="scqa-label">NEXT STEPS</div>
             <div class="scqa-title">Immediate Action Items (Next 48 Hours)</div>
             <div class="scqa-content">
-                
+                ${actionPlan.actions.slice(0, 5).map((action, idx) => `
                     <div class="recommendation-item">
-                        <span class="recommendation-number">1</span>
-                        <span class="recommendation-title">Investigate anomaly in French Connection - GM %</span>
-                        <div class="recommendation-description">Urgent investigation required for unusual drop of 41.8%.</div>
+                        <span class="recommendation-number">${idx + 1}</span>
+                        <span class="recommendation-title">${action.title}</span>
+                        <div class="recommendation-description">${action.description}</div>
                     </div>
-                
+                `).join('')}
             </div>
         </div>
 
@@ -486,3 +430,86 @@
     </div>
 </body>
 </html>
+    `.trim();
+  }
+
+  /**
+   * Calculate average gross margin
+   */
+  private calculateAvgGM(data: ConsolidatedData): string {
+    const gmMetrics = data.dataPoints.filter(d => d.metric.includes('GM %'));
+    if (gmMetrics.length === 0) return 'N/A';
+
+    const avg = gmMetrics.reduce((sum, m) => sum + (m.value as number), 0) / gmMetrics.length;
+    return avg.toFixed(1);
+  }
+
+  /**
+   * Format insight description for MBB style
+   */
+  private formatInsightDescription(desc: string): string {
+    // Take first 2-3 sentences for executive summary
+    const sentences = desc.split('\n\n')[0];
+    return sentences.substring(0, 400) + (sentences.length > 400 ? '...' : '');
+  }
+
+  /**
+   * Generate strategic recommendations
+   */
+  private generateRecommendations(insights: Insight[], data: ConsolidatedData): string {
+    const recommendations = [
+      {
+        title: 'Revenue Acceleration - Brand Focus',
+        description: `Concentrate sales efforts on top 3 underperforming brand-market combinations identified in critical insights. Implement daily tracking, increase ad spend 20-30% on Namshi/Noon, and ensure no stockouts on top 20 SKUs. Expected impact: 60-70% of gap closure.`,
+      },
+      {
+        title: 'Marketing Efficiency Optimization',
+        description: `Reduce marketing spend for brands exceeding industry benchmarks (>7% for innerwear, >5.5% for footwear) by pausing low-ROAS campaigns (<2.0). Reallocate budget to retargeting and high-performing channels. Expected impact: 2-3% margin improvement.`,
+      },
+      {
+        title: 'Channel Diversification',
+        description: `Address underperforming channels (<10% revenue share) by ensuring catalog completeness, reviewing competitive pricing, and increasing promotional activity. Reduce single-channel dependency risk while capturing incremental revenue.`,
+      },
+      {
+        title: 'Profitability Enhancement',
+        description: `For brands with GM 15+ points below portfolio average, conduct immediate root cause analysis on pricing, COGS, discounting, and returns. Target 5-point GM improvement within 60 days through supplier negotiations and promotional discipline.`,
+      },
+      {
+        title: 'SKU Performance Management',
+        description: `Analyze top 20 and bottom 20 SKUs by brand. Push bestsellers aggressively through featured placements and ads. Discount slow-movers 15-20% to clear inventory and improve cash flow. Update product content for underperformers.`,
+      },
+    ];
+
+    return recommendations.map((rec, idx) => `
+      <div class="recommendation-item">
+        <span class="recommendation-number">${idx + 1}</span>
+        <span class="recommendation-title">${rec.title}</span>
+        <div class="recommendation-description">${rec.description}</div>
+      </div>
+    `).join('');
+  }
+
+  /**
+   * Generate impact chart
+   */
+  private generateImpactChart(insights: Insight[], totalGap: number): string {
+    const impacts = [
+      { label: 'Brand Focus (Top 3)', value: 65, amount: Math.round(Math.abs(totalGap) * 0.65) },
+      { label: 'Marketing Optimization', value: 15, amount: Math.round(Math.abs(totalGap) * 0.15) },
+      { label: 'Channel Diversification', value: 12, amount: Math.round(Math.abs(totalGap) * 0.12) },
+      { label: 'SKU Management', value: 8, amount: Math.round(Math.abs(totalGap) * 0.08) },
+    ];
+
+    return impacts.map(impact => `
+      <div class="chart-bar">
+        <div class="bar-label">
+          <span>${impact.label}</span>
+          <span class="bar-value">$${impact.amount.toLocaleString()} (${impact.value}%)</span>
+        </div>
+        <div class="bar-fill" style="width: ${impact.value}%"></div>
+      </div>
+    `).join('');
+  }
+}
+
+export const mbbReportGenerator = new MBBReportGenerator();

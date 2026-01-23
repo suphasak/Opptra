@@ -21,6 +21,7 @@ import { dataConsolidator } from '../consolidators/data-consolidator';
 import { insightGenerator } from '../analyzers/insight-generator';
 import { actionPlanGenerator } from '../generators/action-plan-generator';
 import { timelineGenerator } from '../generators/timeline-generator';
+import { mbbReportGenerator } from '../generators/mbb-report-generator';
 import { logger, startTimer } from '../utils/logger';
 import { fashionInsightsGenerator } from '../analyzers/fashion-insights';
 import { generateId } from '../utils/helpers';
@@ -256,8 +257,8 @@ export class OpptraBI {
         files.timeline = timelinePath;
       }
 
-      // Generate comprehensive report
-      const reportHtml = this.generateComprehensiveReport(
+      // Generate MBB-style comprehensive report with SCQA framework
+      const reportHtml = mbbReportGenerator.generateSCQAReport(
         data.insights,
         data.actionPlan,
         data.consolidatedData
